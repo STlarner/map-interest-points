@@ -5,6 +5,7 @@ import "package:provider/provider.dart";
 
 import "dependency_injection/app_dependency_provider.dart";
 import "firebase_options.dart";
+import "providers/progress_indicator_provider.dart";
 import "providers/session_provider.dart";
 import "router/app_routes.dart";
 import "theme/app_theme.dart";
@@ -17,7 +18,11 @@ void main() async {
   setupDependencies();
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => SessionProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => SessionProvider()),
+        ChangeNotifierProvider(create: (_) => ProgressIndicatorProvider()),
+      ],
+
       child: const MyApp(),
     ),
   );

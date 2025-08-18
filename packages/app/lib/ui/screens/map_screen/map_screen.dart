@@ -29,7 +29,10 @@ class MapScreen extends StatelessWidget {
           },
         ),
         children: [
-          TileLayer(urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
+          TileLayer(
+            urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            userAgentPackageName: "com.example.mapInterestPoints",
+          ),
           MarkerLayer(
             markers: [
               Marker(
