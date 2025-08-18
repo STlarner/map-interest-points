@@ -1,16 +1,26 @@
 import "package:core/core.dart";
+import "package:firebase_core/firebase_core.dart";
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 
 import "dependency_injection/app_dependency_provider.dart";
+import "firebase_options.dart";
+import "providers/session_provider.dart";
 import "router/app_routes.dart";
 import "theme/app_theme.dart";
 
 late final GoRouter router;
 
-void main() {
+void main() async {
+  await setupFirebase();
   setupRouter();
   setupDependencies();
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => SessionProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 void setupDependencies() {
@@ -21,6 +31,11 @@ void setupDependencies() {
 
 void setupRouter() {
   router = CoreRouter([AppRoutes()]).buildRouter();
+}
+
+Future<void> setupFirebase() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class MyApp extends StatelessWidget {

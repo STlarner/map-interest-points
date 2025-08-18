@@ -2,7 +2,9 @@ import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_signin_button/flutter_signin_button.dart";
+import "package:provider/provider.dart";
 
+import "../../../providers/session_provider.dart";
 import "../../images/app_images.dart";
 import "widgets/or_divider.dart";
 
@@ -57,7 +59,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 24),
                       FilledButton(
-                        onPressed: () => context.pushNamed("map"),
+                        onPressed: () {
+                          context
+                              .read<SessionProvider>()
+                              .login(email: "megaminx96@gmail.com", password: "megaminx96!")
+                              .then((_) {
+                                if (context.mounted) {
+                                  context.pushNamed("map");
+                                }
+                              })
+                              .catchError((dynamic error) {
+                                if (!context.mounted) {
+                                  return;
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Login failed - $error"),
+                                    action: SnackBarAction(
+                                      label: "Close",
+                                      onPressed: () {
+                                        // Undo logic here
+                                      },
+                                    ),
+                                  ),
+                                );
+                              });
+                        },
                         child: const Text("Login"),
                       ),
                       const SizedBox(height: 8),

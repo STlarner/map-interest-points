@@ -1,7 +1,11 @@
+import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:flutter_map/flutter_map.dart";
 import "package:latlong2/latlong.dart";
+import "package:provider/provider.dart";
 import "package:url_launcher/url_launcher.dart";
+
+import "../../../providers/session_provider.dart";
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
@@ -9,16 +13,19 @@ class MapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Flutter Map 8 Example')),
+      appBar: AppBar(title: const Text("Flutter Map 8 Example")),
       body: FlutterMap(
         options: MapOptions(
           initialCenter: const LatLng(37.7749, -122.4194),
           initialZoom: 13.0,
           onTap: (tapPosition, point) {
-            print('Tapped at $point');
+            GetIt.I<LogProvider>().log("Tapped at $point", Severity.debug);
           },
           onPositionChanged: (position, hasGesture) {
-            print('Map moved to ${position.center}, zoom ${position.zoom}');
+            GetIt.I<LogProvider>().log(
+              "Map moved to ${position.center}, zoom ${position.zoom}",
+              Severity.debug,
+            );
           },
         ),
         children: [
@@ -31,7 +38,8 @@ class MapScreen extends StatelessWidget {
                 height: 80,
                 child: GestureDetector(
                   onTap: () {
-                    print('Marker tapped!');
+                    GetIt.I<LogProvider>().log("Marker tapped!", Severity.debug);
+                    context.read<SessionProvider>().logout();
                   },
                   child: const Icon(Icons.location_pin, color: Colors.green, size: 40),
                 ),
@@ -43,8 +51,7 @@ class MapScreen extends StatelessWidget {
             attributions: [
               TextSourceAttribution(
                 "OpenStreetMap contributors",
-                onTap: () =>
-                    launchUrl(Uri.parse("https://openstreetmap.org/copyright")), // (external)
+                onTap: () => launchUrl(Uri.parse("https://openstreetmap.org/copyright")),
               ),
               // Also add images...
             ],

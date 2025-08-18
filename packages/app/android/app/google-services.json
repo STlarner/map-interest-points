@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "426670341708",
+    "project_id": "map-interest-points-a1177",
+    "storage_bucket": "map-interest-points-a1177.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426670341708:android:80b54e878da9260902fee9",
+        "android_client_info": {
+          "package_name": "com.example.map_interest_points"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK1FEZdU835a2JxGU4pz2e3oIR4HFDvlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
