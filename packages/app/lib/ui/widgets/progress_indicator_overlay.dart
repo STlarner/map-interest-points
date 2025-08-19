@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
-import "../../providers/progress_indicator_provider.dart";
+import "../../notifiers/progress_indicator_notifier.dart";
 
 class ProgressIndicatorOverlay extends StatelessWidget {
   const ProgressIndicatorOverlay({required this.child, super.key});
@@ -12,7 +12,7 @@ class ProgressIndicatorOverlay extends StatelessWidget {
     return Stack(
       children: [
         child,
-        Consumer<ProgressIndicatorProvider>(
+        Consumer<ProgressIndicatorNotifier>(
           builder: (_, notifier, _) {
             if (!notifier.isLoading) {
               return const SizedBox.shrink();

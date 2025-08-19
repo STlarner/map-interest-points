@@ -4,7 +4,7 @@ import "package:flutter/services.dart";
 import "package:flutter_signin_button/flutter_signin_button.dart";
 import "package:provider/provider.dart";
 
-import "../../../providers/session_provider.dart";
+import "../../../notifiers/session_notifier.dart";
 import "../../extensions/ui_context_extension.dart";
 import "../../images/app_images.dart";
 import "widgets/or_divider.dart";
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               spacing: 32,
               children: [
-                Image.asset(AppImages.tokyoSigns, fit: BoxFit.fitHeight),
+                Image.asset(AppImages.tokyoSigns, fit: BoxFit.fitWidth),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: Form(
@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             context.showProgressIndicator();
                             context
-                                .read<SessionProvider>()
+                                .read<SessionNotifier>()
                                 .login(
                                   email: _emailController.text,
                                   password: _passwordController.text,

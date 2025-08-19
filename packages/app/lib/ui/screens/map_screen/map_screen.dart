@@ -1,11 +1,12 @@
 import "package:core/core.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_map/flutter_map.dart";
 import "package:latlong2/latlong.dart";
 import "package:provider/provider.dart";
 import "package:url_launcher/url_launcher.dart";
 
-import "../../../providers/session_provider.dart";
+import "../../../notifiers/session_notifier.dart";
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
@@ -13,7 +14,21 @@ class MapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Flutter Map 8 Example")),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
+        title: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: const ShapeDecoration(
+            color: Colors.blue,
+            shape: StadiumBorder(), // Perfect capsule shape
+          ),
+          child: const Text("Capsule Text", style: TextStyle(color: Colors.white)),
+        ),
+      ),
       body: FlutterMap(
         options: MapOptions(
           initialCenter: const LatLng(37.7749, -122.4194),
@@ -42,7 +57,7 @@ class MapScreen extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     GetIt.I<LogProvider>().log("Marker tapped!", Severity.debug);
-                    context.read<SessionProvider>().logout();
+                    context.read<SessionNotifier>().logout();
                   },
                   child: const Icon(Icons.location_pin, color: Colors.green, size: 40),
                 ),

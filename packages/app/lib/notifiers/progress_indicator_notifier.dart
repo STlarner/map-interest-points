@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-class ProgressIndicatorProvider extends ChangeNotifier {
+class ProgressIndicatorNotifier extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 

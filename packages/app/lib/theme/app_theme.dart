@@ -76,7 +76,8 @@ ThemeData get light {
     useMaterial3: true,
     colorScheme: _lightColorScheme,
     appBarTheme: AppBarTheme(
-      backgroundColor: _lightColorScheme.primary,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
       foregroundColor: _lightColorScheme.onPrimary,
       centerTitle: true,
     ),

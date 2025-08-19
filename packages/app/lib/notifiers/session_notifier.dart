@@ -2,8 +2,8 @@ import "package:core/core.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/foundation.dart";
 
-class SessionProvider extends ChangeNotifier {
-  SessionProvider() {
+class SessionNotifier extends ChangeNotifier {
+  SessionNotifier() {
     _auth.authStateChanges().listen((firebaseUser) {
       _user = firebaseUser;
       notifyListeners();
@@ -19,7 +19,7 @@ class SessionProvider extends ChangeNotifier {
   Future<void> login({required String email, required String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      GetIt.I<LogProvider>().log("User logged in", Severity.info);
+      GetIt.I<LogProvider>().log("Succeded login", Severity.info);
     } on FirebaseAuthException catch (e) {
       GetIt.I<LogProvider>().log("Failed to log with error: ${e.message}", Severity.error);
       throw Exception(e.message);
@@ -29,7 +29,7 @@ class SessionProvider extends ChangeNotifier {
   Future<void> register({required String email, required String password}) async {
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      GetIt.I<LogProvider>().log("User registered", Severity.info);
+      GetIt.I<LogProvider>().log("Succeded register", Severity.info);
     } on FirebaseAuthException catch (e) {
       GetIt.I<LogProvider>().log("Failed to register with error: ${e.message}", Severity.error);
       throw Exception(e.message);
@@ -39,7 +39,7 @@ class SessionProvider extends ChangeNotifier {
   Future<void> logout() async {
     try {
       await _auth.signOut();
-      GetIt.I<LogProvider>().log("User logged out", Severity.info);
+      GetIt.I<LogProvider>().log("Succeded logout", Severity.info);
     } on FirebaseAuthException catch (e) {
       GetIt.I<LogProvider>().log("Failed to logout with error: ${e.message}", Severity.error);
       throw Exception(e.message);
