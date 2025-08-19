@@ -5,6 +5,7 @@ import "package:flutter_signin_button/flutter_signin_button.dart";
 import "package:provider/provider.dart";
 
 import "../../../notifiers/session_notifier.dart";
+import "../../../router/app_routes.dart";
 import "../../extensions/ui_context_extension.dart";
 import "../../images/app_images.dart";
 import "widgets/or_divider.dart";
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 })
                                 .then((_) {
                                   if (context.mounted) {
-                                    context.goNamed("map");
+                                    context.go(AppRoute.home.path);
                                   }
                                 })
                                 .catchError((dynamic error) {

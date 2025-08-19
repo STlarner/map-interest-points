@@ -78,7 +78,7 @@ ThemeData get light {
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      foregroundColor: _lightColorScheme.onPrimary,
+      foregroundColor: _lightColorScheme.primary,
       centerTitle: true,
     ),
     inputDecorationTheme: InputDecorationTheme(
