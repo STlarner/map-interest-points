@@ -34,7 +34,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _onSessionChanged() {
-    print(_sessionNotifier.isLoggedIn);
     if (_sessionNotifier.isLoggedIn) {
       context.go(AppRoute.home.path);
       return;

@@ -2,11 +2,13 @@ import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "../ui/screens/home_screen/home_screen.dart";
 import "../ui/screens/login_screen/login_screen.dart";
+import "../ui/screens/sign_up_screen/sign_up_screen.dart";
 import "../ui/screens/splash_screen/splash_screen.dart";
 
 enum AppRoute {
   splash("/"),
   login("/login"),
+  signUp("/login/sign-up"),
   home("/tabs/home"),
   myPlans("/tabs/my-plans");
 
@@ -27,6 +29,12 @@ class AppRoutes implements RouteProvider {
       name: "login",
       path: AppRoute.login.path,
       pageBuilder: (context, state) => const NoTransitionPage(child: LoginScreen()),
+      routes: [GoRoute(path: "sign-up", builder: (context, state) => const SignUpScreen())],
+    ),
+    GoRoute(
+      name: "sign-up",
+      path: AppRoute.signUp.path,
+      builder: (context, state) => const SignUpScreen(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {

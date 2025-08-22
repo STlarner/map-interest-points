@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Image.asset(AppImages.tokyoSigns, fit: BoxFit.fitWidth),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -169,6 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           onPressed: () {
                             GetIt.I<LogProvider>().log("Sign Up Button Pressed", Severity.debug);
+                            context.go(AppRoute.signUp.path);
                           },
                           child: const Text("Don't have an account? Sign up"),
                         ),
