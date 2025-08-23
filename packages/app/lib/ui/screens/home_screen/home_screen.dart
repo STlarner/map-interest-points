@@ -4,6 +4,7 @@ import "package:provider/provider.dart";
 
 import "../../../notifiers/session_notifier.dart";
 import "../../../router/app_routes.dart";
+import "../../images/app_images.dart";
 import "../../widgets/plan_card_widget.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -34,7 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           child: Column(
             spacing: 16,
-            children: [PlanCardWidget(), PlanCardWidget(), PlanCardWidget()],
+            children: [
+              PlanCardWidget(
+                planTitle: "Tokyo, Japan",
+                planDescription:
+                    "A two week trip to Tokyo and nearby cities like Osaka and Kyoto.",
+                planImagePath: AppImages.tokyoSigns,
+                planStartDate: DateTime(2023, 11, 02),
+                planEndDate: DateTime(2023, 11, 12),
+              ),
+            ],
           ),
         ),
       ),

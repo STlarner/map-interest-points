@@ -1,10 +1,24 @@
+import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:ui/ui.dart";
 
 import "../images/app_images.dart";
 
 class PlanCardWidget extends StatelessWidget {
-  const PlanCardWidget({super.key});
+  const PlanCardWidget({
+    super.key,
+    required this.planTitle,
+    required this.planDescription,
+    required this.planImagePath,
+    required this.planStartDate,
+    required this.planEndDate,
+  });
+
+  final String planTitle;
+  final String planDescription;
+  final String planImagePath;
+  final DateTime planStartDate;
+  final DateTime planEndDate;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +44,7 @@ class PlanCardWidget extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                AppImages.tokyoSigns,
+                planImagePath,
                 fit: BoxFit.cover,
                 width: 90,
                 height: 120,
@@ -41,14 +55,14 @@ class PlanCardWidget extends StatelessWidget {
                 spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Tokyo, Japan", style: context.textTheme.headlineSmall),
+                  Text(planTitle, style: context.textTheme.headlineSmall),
                   Text(
-                    "A two week trip to Tokyo and nearby cities like Osaka and Kyoto.",
+                    planDescription,
                     style: context.textTheme.bodyMedium!.copyWith(
                       color: context.colorScheme.secondary,
                     ),
                   ),
-                  Text("02 November - 12 November"),
+                  Text("${planStartDate.ddMMM} - ${planEndDate.ddMMM}"),
                 ],
               ),
             ),
