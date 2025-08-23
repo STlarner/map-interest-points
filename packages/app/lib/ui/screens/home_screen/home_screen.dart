@@ -4,6 +4,7 @@ import "package:provider/provider.dart";
 
 import "../../../notifiers/session_notifier.dart";
 import "../../../router/app_routes.dart";
+import "../../widgets/plan_card_widget.dart";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,7 +29,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: const Placeholder(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: SingleChildScrollView(
+          child: Column(
+            spacing: 16,
+            children: [PlanCardWidget(), PlanCardWidget(), PlanCardWidget()],
+          ),
+        ),
+      ),
     );
   }
 }

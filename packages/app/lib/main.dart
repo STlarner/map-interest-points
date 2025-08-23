@@ -9,6 +9,7 @@ import "notifiers/progress_indicator_notifier.dart";
 import "notifiers/session_notifier.dart";
 import "router/app_routes.dart";
 import "theme/app_theme.dart";
+import "ui/widgets/progress_indicator_overlay.dart";
 
 late final GoRouter router;
 
@@ -54,6 +55,14 @@ class MyApp extends StatelessWidget {
       routerConfig: router,
       theme: light,
       darkTheme: dark,
+      builder: (context, child) {
+        return Overlay(
+          initialEntries: [
+            OverlayEntry(builder: (context) => child!),
+            OverlayEntry(builder: (context) => const ProgressIndicatorWidget()),
+          ],
+        );
+      },
     );
   }
 }

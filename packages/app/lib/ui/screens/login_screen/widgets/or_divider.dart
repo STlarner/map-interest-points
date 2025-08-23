@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:ui/ui.dart";
 
 class OrDivider extends StatelessWidget {
   const OrDivider({super.key});
@@ -9,9 +10,13 @@ class OrDivider extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 5,
       children: [
-        Expanded(child: Divider(thickness: 1, color: Theme.of(context).colorScheme.secondary)),
-        Text("or", style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
-        Expanded(child: Divider(thickness: 1, color: Theme.of(context).colorScheme.secondary)),
+        Expanded(
+          child: Divider(thickness: 1, color: context.colorScheme.secondary),
+        ),
+        Text("or", style: TextStyle(color: context.colorScheme.secondary)),
+        Expanded(
+          child: Divider(thickness: 1, color: context.colorScheme.secondary),
+        ),
       ],
     );
   }

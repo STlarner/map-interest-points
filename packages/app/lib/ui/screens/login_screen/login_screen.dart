@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_signin_button/flutter_signin_button.dart";
 import "package:provider/provider.dart";
+import "package:ui/ui.dart";
 
 import "../../../notifiers/session_notifier.dart";
 import "../../../router/app_routes.dart";
@@ -35,7 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
         body: SingleChildScrollView(
           child: Center(
             child: Column(
@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           alignment: Alignment.center,
                           child: Text(
                             "Let's get started!",
-                            style: Theme.of(context).textTheme.headlineLarge,
+                            style: context.textTheme.headlineLarge,
                           ),
                         ),
                         const SizedBox(height: 32),
@@ -65,7 +65,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           textCapitalization: TextCapitalization.none,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
-                            final RegExp emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                            final RegExp emailRegex = RegExp(
+                              r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$",
+                            );
                             if (value == null || value.isEmpty) {
                               return "Please enter your email";
                             }
@@ -80,15 +82,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             border: OutlineInputBorder(),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
                           textCapitalization: TextCapitalization.none,
                           autocorrect: false,
                           obscureText: true,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) =>
-                              (value == null || value.isEmpty) ? "Enter a valid password" : null,
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? "Enter a valid password"
+                              : null,
                           decoration: const InputDecoration(
                             labelText: "Password",
                             hintText: "Enter your password",
@@ -144,7 +147,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         SignInButton(
                           Buttons.Google,
                           shape: StadiumBorder(
-                            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+                            side: BorderSide(
+                              color: context.colorScheme.outline,
+                            ),
                           ),
                           elevation: 0,
                           onPressed: () {
@@ -168,7 +173,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 8),
                         TextButton(
                           onPressed: () {
-                            GetIt.I<LogProvider>().log("Sign Up Button Pressed", Severity.debug);
+                            GetIt.I<LogProvider>().log(
+                              "Sign Up Button Pressed",
+                              Severity.debug,
+                            );
                             context.go(AppRoute.signUp.path);
                           },
                           child: const Text("Don't have an account? Sign up"),

@@ -37,21 +37,23 @@ class AppRoutes implements RouteProvider {
       builder: (context, state) => const SignUpScreen(),
     ),
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
+      pageBuilder: (context, state, navigationShell) {
         GetIt.I<LogProvider>().log("Rebuilding navigation shell", Severity.debug);
 
-        return Scaffold(
-          body: navigationShell,
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: navigationShell.currentIndex,
-            onTap: (index) {
-              GetIt.I<LogProvider>().log("Switching to index $index", Severity.debug);
-              navigationShell.goBranch(index, initialLocation: true);
-            },
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-              BottomNavigationBarItem(icon: Icon(Icons.person), label: "My Plans"),
-            ],
+        return NoTransitionPage(
+          child: Scaffold(
+            body: navigationShell,
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: navigationShell.currentIndex,
+              onTap: (index) {
+                GetIt.I<LogProvider>().log("Switching to index $index", Severity.debug);
+                navigationShell.goBranch(index, initialLocation: true);
+              },
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+                BottomNavigationBarItem(icon: Icon(Icons.person), label: "My Plans"),
+              ],
+            ),
           ),
         );
       },
