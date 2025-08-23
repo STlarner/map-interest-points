@@ -2,23 +2,21 @@ import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:ui/ui.dart";
 
-import "../images/app_images.dart";
-
-class PlanCardWidget extends StatelessWidget {
-  const PlanCardWidget({
+class TripCardWidget extends StatelessWidget {
+  const TripCardWidget({
     super.key,
-    required this.planTitle,
-    required this.planDescription,
-    required this.planImagePath,
-    required this.planStartDate,
-    required this.planEndDate,
+    required this.tripTitle,
+    required this.tripDescription,
+    required this.tripImagePath,
+    required this.tripStartDate,
+    required this.tripEndDate,
   });
 
-  final String planTitle;
-  final String planDescription;
-  final String planImagePath;
-  final DateTime planStartDate;
-  final DateTime planEndDate;
+  final String tripTitle;
+  final String tripDescription;
+  final String tripImagePath;
+  final DateTime tripStartDate;
+  final DateTime tripEndDate;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,7 @@ class PlanCardWidget extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                planImagePath,
+                tripImagePath,
                 fit: BoxFit.cover,
                 width: 90,
                 height: 120,
@@ -55,14 +53,14 @@ class PlanCardWidget extends StatelessWidget {
                 spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(planTitle, style: context.textTheme.headlineSmall),
+                  Text(tripTitle, style: context.textTheme.headlineSmall),
                   Text(
-                    planDescription,
+                    tripDescription,
                     style: context.textTheme.bodyMedium!.copyWith(
                       color: context.colorScheme.secondary,
                     ),
                   ),
-                  Text("${planStartDate.ddMMM} - ${planEndDate.ddMMM}"),
+                  Text("${tripStartDate.ddMMM} - ${tripEndDate.ddMMM}"),
                 ],
               ),
             ),

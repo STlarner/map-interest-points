@@ -1,8 +1,10 @@
-import "package:core/core.dart";
-import "package:flutter/material.dart";
-import "package:provider/provider.dart";
+import "dart:async";
 
-import "../../../notifiers/session_notifier.dart";
+import "package:core/core.dart";
+import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter/material.dart";
+
+import "../../../dependency_injection/session_manager.dart";
 import "../../../router/app_routes.dart";
 
 class SplashScreen extends StatefulWidget {
@@ -13,18 +15,17 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  late final SessionNotifier _sessionNotifier;
+  late final StreamSubscription<User?> _authSub;
 
   @override
   void initState() {
-    _sessionNotifier = Provider.of<SessionNotifier>(context, listen: false);
-    _sessionNotifier.addListener(_onSessionChanged);
+    _authSub = GetIt.I<SessionManager>().userStream.listen(_onSessionChanged);
     super.initState();
   }
 
   @override
   void dispose() {
-    _sessionNotifier.removeListener(_onSessionChanged);
+    _authSub.cancel();
     super.dispose();
   }
 
@@ -33,8 +34,8 @@ class _SplashScreenState extends State<SplashScreen> {
     return const ColoredBox(color: Colors.red);
   }
 
-  void _onSessionChanged() {
-    if (_sessionNotifier.isLoggedIn) {
+  void _onSessionChanged(User? user) {
+    if (user != null) {
       context.go(AppRoute.home.path);
       return;
     }

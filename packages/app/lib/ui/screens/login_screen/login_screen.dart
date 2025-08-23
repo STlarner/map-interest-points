@@ -5,7 +5,7 @@ import "package:flutter_signin_button/flutter_signin_button.dart";
 import "package:provider/provider.dart";
 import "package:ui/ui.dart";
 
-import "../../../notifiers/session_notifier.dart";
+import "../../../dependency_injection/session_manager.dart";
 import "../../../router/app_routes.dart";
 import "../../extensions/ui_context_extension.dart";
 import "../../images/app_images.dart";
@@ -106,8 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
 
                             context.showProgressIndicator();
-                            context
-                                .read<SessionNotifier>()
+                            GetIt.I<SessionManager>()
                                 .login(
                                   email: _emailController.text,
                                   password: _passwordController.text,

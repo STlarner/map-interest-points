@@ -6,7 +6,7 @@ import "package:latlong2/latlong.dart";
 import "package:provider/provider.dart";
 import "package:url_launcher/url_launcher.dart";
 
-import "../../../notifiers/session_notifier.dart";
+import "../../../dependency_injection/session_manager.dart";
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
@@ -26,7 +26,10 @@ class MapScreen extends StatelessWidget {
             color: Colors.blue,
             shape: StadiumBorder(), // Perfect capsule shape
           ),
-          child: const Text("Capsule Text", style: TextStyle(color: Colors.white)),
+          child: const Text(
+            "Capsule Text",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
       body: FlutterMap(
@@ -56,10 +59,17 @@ class MapScreen extends StatelessWidget {
                 height: 80,
                 child: GestureDetector(
                   onTap: () {
-                    GetIt.I<LogProvider>().log("Marker tapped!", Severity.debug);
-                    context.read<SessionNotifier>().logout();
+                    GetIt.I<LogProvider>().log(
+                      "Marker tapped!",
+                      Severity.debug,
+                    );
+                    GetIt.I<SessionManager>().logout();
                   },
-                  child: const Icon(Icons.location_pin, color: Colors.green, size: 40),
+                  child: const Icon(
+                    Icons.location_pin,
+                    color: Colors.green,
+                    size: 40,
+                  ),
                 ),
               ),
             ],
@@ -69,7 +79,8 @@ class MapScreen extends StatelessWidget {
             attributions: [
               TextSourceAttribution(
                 "OpenStreetMap contributors",
-                onTap: () => launchUrl(Uri.parse("https://openstreetmap.org/copyright")),
+                onTap: () =>
+                    launchUrl(Uri.parse("https://openstreetmap.org/copyright")),
               ),
               // Also add images...
             ],

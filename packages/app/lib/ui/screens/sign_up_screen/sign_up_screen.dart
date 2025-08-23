@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:ui/ui.dart";
 
-import "../../../notifiers/session_notifier.dart";
+import "../../../dependency_injection/session_manager.dart";
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -96,8 +96,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 FilledButton(
                   child: const Text("Sign Up"),
                   onPressed: () {
-                    context
-                        .read<SessionNotifier>()
+                    GetIt.I<SessionManager>()
                         .register(
                           email: _emailController.text,
                           password: _passwordController.text,
