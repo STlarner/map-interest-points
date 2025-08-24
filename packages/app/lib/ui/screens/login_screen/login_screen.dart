@@ -2,7 +2,6 @@ import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_signin_button/flutter_signin_button.dart";
-import "package:provider/provider.dart";
 import "package:ui/ui.dart";
 
 import "../../../dependency_injection/session_manager.dart";

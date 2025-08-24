@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => context.read<TripsNotifier>().getAllUserTrips(),
+        onRefresh: () => context.read<TripsNotifier>().fetchAllUserTrips(),
         child: Consumer<TripsNotifier>(
           builder: (context, tripsNotifier, child) {
             switch (tripsNotifier.upcomingTripsState.status) {
@@ -47,27 +47,38 @@ class _HomeScreenState extends State<HomeScreen> {
                 return ListView(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 24,
+                      ),
                       child: Text(
                         "Upcoming Trips",
                         style: context.textTheme.titleLarge,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    ...tripsNotifier.upcomingTripsState.data!.map(
-                      (trip) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0,
-                          vertical: 12,
-                        ),
-                        child: TripCardWidget(
-                          tripTitle: trip.title,
-                          tripDescription: trip.description,
-                          tripImagePath: AppImages.tokyoSigns,
-                          tripStartDate: trip.startDate,
-                          tripEndDate: trip.endDate,
-                        ),
-                      ),
+                    ListView.builder(
+                      itemCount: tripsNotifier.upcomingTripsState.data!.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final trip =
+                            tripsNotifier.upcomingTripsState.data![index];
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            top: 0,
+                            left: 24,
+                            right: 24,
+                            bottom: 12,
+                          ),
+                          child: TripCardWidget(
+                            tripTitle: trip.title,
+                            tripDescription: trip.description,
+                            tripImagePath: AppImages.tokyoSigns,
+                            tripStartDate: trip.startDate,
+                            tripEndDate: trip.endDate,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 );

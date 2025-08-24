@@ -4,8 +4,10 @@ import "package:provider/provider.dart";
 import "../notifiers/trips_notifier.dart";
 import "../ui/screens/home_screen/home_screen.dart";
 import "../ui/screens/login_screen/login_screen.dart";
+import "../ui/screens/my_trips_screen/my_trips_screen.dart";
 import "../ui/screens/sign_up_screen/sign_up_screen.dart";
 import "../ui/screens/splash_screen/splash_screen.dart";
+import "../ui/widgets/floating_bottom_navigation_bar.dart";
 
 enum AppRoute {
   splash("/"),
@@ -49,22 +51,19 @@ class AppRoutes implements RouteProvider {
 
     StatefulShellRoute.indexedStack(
       pageBuilder: (context, state, navigationShell) {
-        context.read<TripsNotifier>().getAllUserTrips();
+        context.read<TripsNotifier>().fetchAllUserTrips();
         return NoTransitionPage(
           child: Scaffold(
             body: navigationShell,
-            bottomNavigationBar: BottomNavigationBar(
+            bottomNavigationBar: FloatingBottomNavigationBar(
               currentIndex: navigationShell.currentIndex,
               onTap: (index) {
                 navigationShell.goBranch(index, initialLocation: true);
               },
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: "My Trips",
-                ),
-              ],
+              onCenterButtonTap: () => GetIt.I<LogProvider>().log(
+                "Center Button Tapped",
+                Severity.debug,
+              ),
             ),
           ),
         );
@@ -84,7 +83,7 @@ class AppRoutes implements RouteProvider {
             GoRoute(
               path: AppRoute.myTrips.path,
               pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: Text("My Trips")),
+                  const NoTransitionPage(child: MyTripsScreen()),
             ),
           ],
         ),

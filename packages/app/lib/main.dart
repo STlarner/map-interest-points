@@ -5,8 +5,8 @@ import "package:provider/provider.dart";
 
 import "dependency_injection/app_dependency_provider.dart";
 import "firebase_options.dart";
-import "notifiers/trips_notifier.dart";
 import "notifiers/progress_indicator_notifier.dart";
+import "notifiers/trips_notifier.dart";
 import "router/app_routes.dart";
 import "theme/app_theme.dart";
 import "ui/widgets/progress_indicator_overlay.dart";
