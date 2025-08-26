@@ -1,8 +1,10 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:core/core.dart";
+import "package:firebase_storage/firebase_storage.dart";
 
 class FirestoreManager {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   /// Create or update a document
   Future<void> setDocument({
@@ -31,7 +33,10 @@ class FirestoreManager {
     required String documentId,
   }) async {
     try {
-      final doc = await _firestore.collection(collectionPath).doc(documentId).get();
+      final doc = await _firestore
+          .collection(collectionPath)
+          .doc(documentId)
+          .get();
       if (doc.exists) {
         return doc;
       } else {
@@ -48,12 +53,17 @@ class FirestoreManager {
   }
 
   /// Read all documents from a collection
-  Future<List<QueryDocumentSnapshot>> getCollection({required String collectionPath}) async {
+  Future<List<QueryDocumentSnapshot>> getCollection({
+    required String collectionPath,
+  }) async {
     try {
       final snapshot = await _firestore.collection(collectionPath).get();
       return snapshot.docs;
     } catch (e) {
-      GetIt.I<LogProvider>().log("Error reading collection: $e", Severity.error);
+      GetIt.I<LogProvider>().log(
+        "Error reading collection: $e",
+        Severity.error,
+      );
       return [];
     }
   }
@@ -76,7 +86,10 @@ class FirestoreManager {
   }
 
   /// Delete a document
-  Future<void> deleteDocument({required String collectionPath, required String documentId}) async {
+  Future<void> deleteDocument({
+    required String collectionPath,
+    required String documentId,
+  }) async {
     try {
       await _firestore.collection(collectionPath).doc(documentId).delete();
       GetIt.I<LogProvider>().log(
@@ -99,5 +112,19 @@ class FirestoreManager {
     required String documentId,
   }) {
     return _firestore.collection(collectionPath).doc(documentId).snapshots();
+  }
+
+  /// get download url for a file on storage
+  Future<String> getDownloadUrl({required String filePath}) async {
+    try {
+      final url = await _storage.ref(filePath).getDownloadURL();
+      return url;
+    } catch (e) {
+      GetIt.I<LogProvider>().log(
+        "Error getting download url for file: $e",
+        Severity.error,
+      );
+      throw Exception(e);
+    }
   }
 }

@@ -35,6 +35,7 @@ class TripsNotifier extends ChangeNotifier {
 
   Future<void> fetchAllUserTrips() async {
     GetIt.I<LogProvider>().log("Getting all user trips...", Severity.info);
+
     final user = GetIt.I<SessionManager>().user!;
     await GetIt.I<FirestoreManager>()
         .getCollection(collectionPath: "users/${user.uid}/trips")
