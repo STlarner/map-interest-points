@@ -2,6 +2,9 @@ import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:ui/ui.dart";
 
+import "../../models/trip_model.dart";
+import "firebase_async_image.dart";
+
 class TripCardWidget extends StatelessWidget {
   const TripCardWidget({
     super.key,
@@ -12,9 +15,19 @@ class TripCardWidget extends StatelessWidget {
     required this.tripEndDate,
   });
 
+  TripCardWidget.fromTripModel({Key? key, required TripModel tripModel})
+    : this(
+        key: key,
+        tripTitle: tripModel.title,
+        tripDescription: tripModel.description,
+        tripImagePath: tripModel.imagePath,
+        tripStartDate: tripModel.startDate,
+        tripEndDate: tripModel.endDate,
+      );
+
   final String tripTitle;
   final String tripDescription;
-  final String tripImagePath;
+  final String? tripImagePath;
   final DateTime tripStartDate;
   final DateTime tripEndDate;
 
@@ -41,8 +54,8 @@ class TripCardWidget extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                tripImagePath,
+              child: FirebaseAsyncImage(
+                path: tripImagePath ?? "trips/default/camera.jpg",
                 fit: BoxFit.cover,
                 width: 90,
                 height: 120,

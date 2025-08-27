@@ -36,13 +36,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                       horizontal: 24.0,
                       vertical: 12,
                     ),
-                    child: TripCardWidget(
-                      tripTitle: trip.title,
-                      tripDescription: trip.description,
-                      tripImagePath: AppImages.tokyoSigns,
-                      tripStartDate: trip.startDate,
-                      tripEndDate: trip.endDate,
-                    ),
+                    child: TripCardWidget.fromTripModel(tripModel: trip),
                   );
                 },
               );

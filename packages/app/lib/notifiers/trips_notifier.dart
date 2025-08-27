@@ -13,8 +13,6 @@ class TripsNotifier extends ChangeNotifier {
   AsyncState<List<TripModel>> _allUserTripsState = AsyncState.loading();
 
   AsyncState<List<TripModel>> get upcomingTripsState {
-    GetIt.I<LogProvider>().log("Getting upcoming trips...", Severity.info);
-
     switch (_allUserTripsState.status) {
       case AsyncStatus.initial:
       case AsyncStatus.loading:
@@ -43,8 +41,10 @@ class TripsNotifier extends ChangeNotifier {
           final trips =
               collection
                   .map(
-                    (doc) =>
-                        TripModel.fromJson(doc.data()! as Map<String, dynamic>),
+                    (doc) => TripModel.fromJson(
+                      id: doc.id,
+                      json: doc.data()! as Map<String, dynamic>,
+                    ),
                   )
                   .toList()
                 ..sort((a, b) => b.startDate.compareTo(a.startDate));

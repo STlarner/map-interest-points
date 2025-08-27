@@ -121,10 +121,24 @@ class FirestoreManager {
       return url;
     } catch (e) {
       GetIt.I<LogProvider>().log(
-        "Error getting download url for file: $e",
+        "Error getting download url from $filePath: $e",
         Severity.error,
       );
-      throw Exception(e);
+      return "";
+    }
+  }
+
+  /// get download url for a file on storage
+  Reference? getStorageReference({required String filePath}) {
+    try {
+      final url = _storage.ref(filePath);
+      return url;
+    } catch (e) {
+      GetIt.I<LogProvider>().log(
+        "Error getting reference from $filePath: $e",
+        Severity.error,
+      );
+      return null;
     }
   }
 }

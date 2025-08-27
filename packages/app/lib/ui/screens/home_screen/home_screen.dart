@@ -70,13 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             right: 24,
                             bottom: 12,
                           ),
-                          child: TripCardWidget(
-                            tripTitle: trip.title,
-                            tripDescription: trip.description,
-                            tripImagePath: AppImages.tokyoSigns,
-                            tripStartDate: trip.startDate,
-                            tripEndDate: trip.endDate,
-                          ),
+                          child: TripCardWidget.fromTripModel(tripModel: trip),
                         );
                       },
                     ),
