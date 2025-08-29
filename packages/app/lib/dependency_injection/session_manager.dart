@@ -11,6 +11,11 @@ class SessionManager {
     });
   }
 
+  Future<String?> getIdToke() async {
+    final user = _auth.currentUser;
+    return user!.getIdToken();
+  }
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
   Stream<User?> get userStream => _auth.authStateChanges();
