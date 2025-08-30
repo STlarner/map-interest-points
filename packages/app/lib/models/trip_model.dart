@@ -1,4 +1,5 @@
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:core/core.dart";
 
 class TripModel {
   TripModel({
@@ -10,17 +11,14 @@ class TripModel {
     required this.imagePath,
   });
 
-  factory TripModel.fromJson({
-    required String id,
-    required Map<String, dynamic> json,
-  }) {
+  factory TripModel.fromJson({required Map<String, dynamic> json}) {
     return TripModel(
-      id: id,
+      id: json["id"] as String,
       title: json["title"] as String,
       description: json["description"] as String,
       imagePath: json["image_path"] as String?,
-      startDate: (json["start_date"] as Timestamp).toDate(),
-      endDate: (json["end_date"] as Timestamp).toDate(),
+      startDate: DateFormatting.fromIsoString(json["start_date"] as String)!,
+      endDate: DateFormatting.fromIsoString(json["end_date"] as String)!,
     );
   }
 

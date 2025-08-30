@@ -9,8 +9,13 @@
 
 import * as functions from "firebase-functions";
 import express from "express";
+import admin from "firebase-admin";
 
 import tripRoutes from "./routes/trips";
+
+if (admin.apps.length === 0) {
+    admin.initializeApp();
+}
 
 const app = express();
 app.use(express.json());

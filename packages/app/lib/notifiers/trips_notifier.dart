@@ -34,27 +34,18 @@ class TripsNotifier extends ChangeNotifier {
   Future<void> fetchAllUserTrips() async {
     GetIt.I<LogProvider>().log("Getting all user trips...", Severity.info);
 
-    final user = GetIt.I<SessionManager>().user!;
-    await GetIt.I<FirestoreManager>()
-        .getCollection(collectionPath: "users/${user.uid}/trips")
-        .then((collection) {
-          final trips =
-              collection
-                  .map(
-                    (doc) => TripModel.fromJson(
-                      id: doc.id,
-                      json: doc.data()! as Map<String, dynamic>,
-                    ),
-                  )
-                  .toList()
-                ..sort((a, b) => b.startDate.compareTo(a.startDate));
-
-          _allUserTripsState = AsyncState.success(trips);
-          notifyListeners();
-        })
-        .catchError((_) {
-          _allUserTripsState = AsyncState.error("Error getting trips");
-          notifyListeners();
-        });
+    GetIt.I<NetworkManager>().get("/trips").then((data) {
+      final listData = data as List<dynamic>;
+      final trips =
+          listData
+              .map(
+                (trip) =>
+                    TripModel.fromJson(json: trip as Map<String, dynamic>),
+              )
+              .toList()
+            ..sort((a, b) => b.startDate.compareTo(a.startDate));
+      _allUserTripsState = AsyncState.success(trips);
+      notifyListeners();
+    });
   }
 }

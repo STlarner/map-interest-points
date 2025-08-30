@@ -2,8 +2,8 @@ import "dart:async";
 import "dart:typed_data";
 
 import "package:core/core.dart";
-import "package:ui/ui.dart";
 import "package:flutter/material.dart";
+import "package:ui/ui.dart";
 
 import "../../dependency_injection/firestore_manager.dart";
 
@@ -40,12 +40,21 @@ class _FirebaseAsyncImageState extends State<FirebaseAsyncImage> {
     );
 
     if (ref == null) {
+      GetIt.I<LogProvider>().log(
+        "Reference for ${widget.path} is null",
+        Severity.error,
+      );
       return Uint8List(0);
     }
 
     final data = await ref.getData(10 * 1024 * 1024);
+
     if (data == null) {
-      throw Exception("File at $widget.path is empty or not accessible.");
+      GetIt.I<LogProvider>().log(
+        "File at ${widget.path} is empty or not accessible.",
+        Severity.error,
+      );
+      throw Exception("File at ${widget.path} is empty or not accessible.");
     }
     return data;
   }

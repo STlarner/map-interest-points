@@ -2,11 +2,14 @@ import "package:get_it/get_it.dart";
 
 import "../logger/core_log_provider.dart";
 import "../logger/log_provider.dart";
+import "../network_manager/core_network_manager.dart";
+import "../network_manager/network_manager.dart";
 import "dependency_provider.dart";
 
 class CoreDependencyProvider extends DependencyProvider {
   @override
   void registerDependencies() {
     GetIt.I.registerSingleton<LogProvider>(CoreLogProvider());
+    GetIt.I.registerSingleton<NetworkManager>(CoreNetworkManager());
   }
 }

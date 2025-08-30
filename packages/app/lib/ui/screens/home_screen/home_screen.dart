@@ -7,7 +7,6 @@ import "../../../dependency_injection/session_manager.dart";
 import "../../../notifiers/async_state.dart";
 import "../../../notifiers/trips_notifier.dart";
 import "../../../router/app_routes.dart";
-import "../../images/app_images.dart";
 import "../../widgets/trip_card_widget.dart";
 
 class HomeScreen extends StatefulWidget {

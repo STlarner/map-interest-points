@@ -19,6 +19,8 @@ class CoreLogProvider extends LogProvider {
           icon = "ℹ️";
         case "FINE":
           icon = "🐛";
+        case "NETWORK":
+          icon = "🌐";
         default:
           icon = "";
       }
@@ -50,6 +52,15 @@ class CoreLogProvider extends LogProvider {
         logger.warning(message);
       case Severity.error:
         logger.shout(message);
+      case Severity.network:
+        logger.network(message);
     }
+  }
+}
+
+extension NetworkLogging on Logger {
+  void network(Object? message, [Object? error, StackTrace? stackTrace]) {
+    const Level network = Level("NETWORK", 800);
+    log(network, message, error, stackTrace);
   }
 }

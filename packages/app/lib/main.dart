@@ -17,6 +17,8 @@ void main() async {
   await setupFirebase();
   setupRouter();
   setupDependencies();
+  setupNetworkManager();
+
   runApp(
     MultiProvider(
       providers: [
@@ -42,6 +44,10 @@ void setupRouter() {
 Future<void> setupFirebase() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
+
+void setupNetworkManager() {
+  GetIt.I.get<NetworkManager>().baseUrl = "https://api-2eaimv2vtq-uc.a.run.app";
 }
 
 class MyApp extends StatelessWidget {

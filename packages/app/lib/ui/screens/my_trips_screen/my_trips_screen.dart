@@ -3,7 +3,6 @@ import "package:provider/provider.dart";
 
 import "../../../notifiers/async_state.dart";
 import "../../../notifiers/trips_notifier.dart";
-import "../../images/app_images.dart";
 import "../../widgets/trip_card_widget.dart";
 
 class MyTripsScreen extends StatefulWidget {
