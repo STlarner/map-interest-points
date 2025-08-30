@@ -1,8 +1,8 @@
 import "package:core/core.dart";
 import "package:flutter/material.dart";
 
-import "../dependency_injection/firestore_manager.dart";
-import "../dependency_injection/session_manager.dart";
+import "../dependency_injection/app_repository.dart";
+
 import "../models/trip_model.dart";
 import "async_state.dart";
 
@@ -32,20 +32,14 @@ class TripsNotifier extends ChangeNotifier {
   }
 
   Future<void> fetchAllUserTrips() async {
-    GetIt.I<LogProvider>().log("Getting all user trips...", Severity.info);
-
-    GetIt.I<NetworkManager>().get("/trips").then((data) {
-      final listData = data as List<dynamic>;
-      final trips =
-          listData
-              .map(
-                (trip) =>
-                    TripModel.fromJson(json: trip as Map<String, dynamic>),
-              )
-              .toList()
-            ..sort((a, b) => b.startDate.compareTo(a.startDate));
-      _allUserTripsState = AsyncState.success(trips);
-      notifyListeners();
-    });
+    GetIt.I<AppRepository>()
+        .getAllTrips()
+        .then((trips) {
+          _allUserTripsState = AsyncState.success(trips);
+          notifyListeners();
+        })
+        .catchError((_) {
+          _allUserTripsState = AsyncState.error("Error fetching trips");
+        });
   }
 }
