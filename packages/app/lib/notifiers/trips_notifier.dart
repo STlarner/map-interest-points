@@ -31,7 +31,11 @@ class TripsNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchAllUserTrips() async {
+  Future<void> fetchAllUserTrips({bool forceRefresh = false}) async {
+    if (_allUserTripsState.status == AsyncStatus.success && !forceRefresh) {
+      return;
+    }
+
     GetIt.I<AppRepository>()
         .getAllTrips()
         .then((trips) {

@@ -19,6 +19,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TripsNotifier>().fetchAllUserTrips();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -27,14 +35,15 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               GetIt.I<SessionManager>().logout();
-              context.go(AppRoute.login.path);
+              context.goNamed(AppRoute.login.name);
             },
             icon: const Icon(Icons.person),
           ),
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => context.read<TripsNotifier>().fetchAllUserTrips(),
+        onRefresh: () =>
+            context.read<TripsNotifier>().fetchAllUserTrips(forceRefresh: true),
         child: Padding(
           padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
           child: ListView(
@@ -79,7 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemBuilder: (context, index) {
                           final trip =
                               tripsNotifier.upcomingTripsState.data![index];
-                          return TripCardWidget.fromTripModel(tripModel: trip);
+                          return TripCardWidget.fromTripModel(
+                            tripModel: trip,
+                            onTap: () => context.pushNamed(
+                              AppRoute.tripDetail.name,
+                              pathParameters: {"tripId": trip.id},
+                            ),
+                          );
                         },
                       );
                   }

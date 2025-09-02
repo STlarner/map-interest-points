@@ -13,71 +13,80 @@ class TripCardWidget extends StatelessWidget {
     required this.tripImagePath,
     required this.tripStartDate,
     required this.tripEndDate,
+    this.onTap,
   });
 
-  TripCardWidget.fromTripModel({Key? key, required TripModel tripModel})
-    : this(
-        key: key,
-        tripTitle: tripModel.title,
-        tripDescription: tripModel.description,
-        tripImagePath: tripModel.imagePath,
-        tripStartDate: tripModel.startDate,
-        tripEndDate: tripModel.endDate,
-      );
+  TripCardWidget.fromTripModel({
+    Key? key,
+    required TripModel tripModel,
+    VoidCallback? onTap,
+  }) : this(
+         key: key,
+         tripTitle: tripModel.title,
+         tripDescription: tripModel.description,
+         tripImagePath: tripModel.imagePath,
+         tripStartDate: tripModel.startDate,
+         tripEndDate: tripModel.endDate,
+         onTap: onTap,
+       );
 
   final String tripTitle;
   final String tripDescription;
   final String? tripImagePath;
   final DateTime tripStartDate;
   final DateTime tripEndDate;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            spreadRadius: 2,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          spacing: 16,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: FirebaseAsyncImage(
-                path: tripImagePath ?? "trips/default/camera.jpg",
-                fit: BoxFit.cover,
-                width: 90,
-                height: 120,
-              ),
-            ),
-            Expanded(
-              child: Column(
-                spacing: 8,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(tripTitle, style: context.textTheme.headlineSmall),
-                  Text(
-                    tripDescription,
-                    style: context.textTheme.bodyMedium!.copyWith(
-                      color: context.colorScheme.secondary,
-                    ),
-                  ),
-                  Text("${tripStartDate.ddMMM} - ${tripEndDate.ddMMM}"),
-                ],
-              ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              spreadRadius: 2,
+              offset: const Offset(0, 8),
             ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            spacing: 16,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: FirebaseAsyncImage(
+                  path: tripImagePath ?? "trips/default/camera.jpg",
+                  fit: BoxFit.cover,
+                  width: 90,
+                  height: 120,
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(tripTitle, style: context.textTheme.headlineSmall),
+                    Text(
+                      tripDescription,
+                      style: context.textTheme.bodyMedium!.withColor(
+                        context.colorScheme.secondary,
+                      ),
+                    ),
+                    Text("${tripStartDate.ddMMM} - ${tripEndDate.ddMMM}"),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

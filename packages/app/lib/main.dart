@@ -26,7 +26,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => TripsNotifier()),
       ],
 
-      child: const MyApp(),
+      child: const App(),
     ),
   );
 }
@@ -50,14 +50,14 @@ void setupNetworkManager() {
   GetIt.I.get<NetworkManager>().baseUrl = "https://api-2eaimv2vtq-uc.a.run.app";
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: "Flutter Demo",
+      title: "TodoTrips",
       routerConfig: router,
       theme: light,
       darkTheme: dark,

@@ -1,6 +1,8 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:core/core.dart";
 
+import "interest_point_model.dart";
+
 class TripModel {
   TripModel({
     required this.id,
@@ -28,6 +30,10 @@ class TripModel {
   final String? imagePath;
   final DateTime startDate;
   final DateTime endDate;
+
+  String get days => (endDate.difference(startDate).inDays + 2).toString();
+
+  List<InterestPointModel> interestPoints = [];
 
   Map<String, dynamic> toJson() {
     return {

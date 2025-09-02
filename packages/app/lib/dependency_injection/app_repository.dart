@@ -1,5 +1,6 @@
 import "package:core/core.dart";
 
+import "../models/interest_point_model.dart";
 import "../models/trip_model.dart";
 
 class AppRepository {
@@ -12,5 +13,20 @@ class AppRepository {
         .map((trip) => TripModel.fromJson(json: trip as Map<String, dynamic>))
         .toList()
       ..sort((a, b) => b.startDate.compareTo(a.startDate));
+  }
+
+  Future<List<InterestPointModel>> getInterestPoints(TripModel trip) async {
+    final data = await GetIt.I<NetworkManager>().get(
+      "/trips/${trip.id}/interest_points",
+    );
+    final listData = data as List<dynamic>;
+    return listData
+        .map(
+          (interestPoint) => InterestPointModel.fromJson(
+            interestPoint as Map<String, dynamic>,
+          ),
+        )
+        .toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
   }
 }

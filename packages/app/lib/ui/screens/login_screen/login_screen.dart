@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 })
                                 .then((_) {
                                   if (context.mounted) {
-                                    context.go(AppRoute.home.path);
+                                    context.goNamed(AppRoute.home.name);
                                   }
                                 })
                                 .catchError((dynamic error) {
@@ -175,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               "Sign Up Button Pressed",
                               Severity.debug,
                             );
-                            context.go(AppRoute.signUp.path);
+                            context.goNamed(AppRoute.signUp.name);
                           },
                           child: const Text("Don't have an account? Sign up"),
                         ),

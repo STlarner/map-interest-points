@@ -41,11 +41,11 @@ class _SplashScreenState extends State<SplashScreen> {
       user.getIdToken().then((token) {
         GetIt.I<NetworkManager>().token = token;
         if (mounted) {
-          context.go(AppRoute.home.path);
+          context.goNamed(AppRoute.home.name);
         }
       });
       return;
     }
-    context.go(AppRoute.login.path);
+    context.goNamed(AppRoute.login.name);
   }
 }
