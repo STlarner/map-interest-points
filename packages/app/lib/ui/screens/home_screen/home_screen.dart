@@ -1,7 +1,6 @@
 import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:ui/extensions/context_extensions/context_text_style_extension.dart";
 import "package:ui/ui.dart";
 
 import "../../../dependency_injection/session_manager.dart";

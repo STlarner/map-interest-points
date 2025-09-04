@@ -26,6 +26,8 @@ class FirebaseAsyncImage extends StatefulWidget {
 }
 
 class _FirebaseAsyncImageState extends State<FirebaseAsyncImage> {
+  static final Map<String, Uint8List> _imagesCache = {};
+
   late final Future<Uint8List> _futureImage;
 
   @override
@@ -35,6 +37,10 @@ class _FirebaseAsyncImageState extends State<FirebaseAsyncImage> {
   }
 
   Future<Uint8List> _loadFirebaseImageBytes() async {
+    if (_imagesCache.containsKey(widget.path)) {
+      return _imagesCache[widget.path]!;
+    }
+
     final ref = GetIt.I<FirestoreManager>().getStorageReference(
       filePath: widget.path,
     );
@@ -56,6 +62,8 @@ class _FirebaseAsyncImageState extends State<FirebaseAsyncImage> {
       );
       throw Exception("File at ${widget.path} is empty or not accessible.");
     }
+
+    _imagesCache[widget.path] = data;
     return data;
   }
 
