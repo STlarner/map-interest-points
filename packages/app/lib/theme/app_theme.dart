@@ -120,8 +120,8 @@ ThemeData get dark {
     useMaterial3: true,
     colorScheme: _darkColorScheme,
     appBarTheme: AppBarTheme(
-      backgroundColor: _darkColorScheme.primary,
-      foregroundColor: _darkColorScheme.onPrimary,
+      backgroundColor: _darkColorScheme.primaryContainer,
+      foregroundColor: _darkColorScheme.onPrimaryContainer,
       centerTitle: true,
     ),
     inputDecorationTheme: InputDecorationTheme(

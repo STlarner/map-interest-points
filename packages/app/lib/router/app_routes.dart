@@ -98,6 +98,7 @@ class AppRoutes implements RouteProvider {
 
       return NoTransitionPage(
         child: Scaffold(
+          extendBody: true,
           body: navigationShell,
           bottomNavigationBar: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
