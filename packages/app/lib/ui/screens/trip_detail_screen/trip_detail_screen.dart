@@ -1,11 +1,12 @@
 import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:ui/extensions/context_extensions/context_text_style_extension.dart";
 import "package:ui/ui.dart";
 
 import "../../../notifiers/trip_detail_notifier.dart";
+import "../../widgets/checkbox_list_card_tile.dart";
 import "../../widgets/firebase_async_image.dart";
+import "../../widgets/trip_day_card.dart";
 
 class TripDetailScreen extends StatefulWidget {
   const TripDetailScreen({super.key});
@@ -85,21 +86,24 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                     Text(
                       "${trip.description} · ${trip.interestPoints.length} saved spot",
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      "ffdfkdfhj \n fdjfdkslfdjk \n fdjfsklfdsjkl \n fsdfklfdj \n "
-                      "ffdfkdfhj \n fdjfdkslfdjk \n fdjfsklfdsjkl \n fsdfklfdj \n"
-                      "ffdfkdfhj \n fdjfdkslfdjk \n fdjfsklfdsjkl \n fsdfklfdj \n"
-                      "ffdfkdfhj \n fdjfdkslfdjk \n fdjfsklfdsjkl \n fsdfklfdj \n"
-                      "ffdfkdfhj \n fdjfdkslfdjk \n fdjfsklfdsjkl \n fsdfklfdj \n"
-                      "ffdfkdfhj \n fdjfdkslfdjk \n fdjfsklfdsjkl \n fsdfklfdj \n"
-                      "ffdfkdfhj \n fdjfdkslfdjk \n fdjfsklfdsjkl \n fsdfklfdj \n",
-                    ),
                   ]),
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final interestPoint = trip.interestPoints[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24.0),
+                      child: TripDayCard(interestPoints: trip.interestPoints),
+                    );
+                  }, childCount: trip.interestPoints.length),
+                ),
+              ),
             ],
           ),
         );

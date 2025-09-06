@@ -11,7 +11,7 @@ class InterestPointModel {
       title: json["title"] as String,
       description: json["description"] as String,
       date: DateTime.parse(json["date"] as String),
-      coordinates: Coordinates.fromJsonfromJson(
+      coordinates: Coordinates.fromJson(
         json["coordinates"] as Map<String, dynamic>,
       ),
     );
@@ -41,7 +41,7 @@ class InterestPointModel {
 class Coordinates {
   Coordinates({required this.latitude, required this.longitude});
 
-  factory Coordinates.fromJsonfromJson(Map<String, dynamic> json) {
+  factory Coordinates.fromJson(Map<String, dynamic> json) {
     return Coordinates(
       latitude: (json["_latitude"] as num).toDouble(),
       longitude: (json["_longitude"] as num).toDouble(),

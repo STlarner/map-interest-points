@@ -1,8 +1,10 @@
+import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 import "../../../notifiers/async_state.dart";
 import "../../../notifiers/trips_notifier.dart";
+import "../../../router/app_routes.dart";
 import "../../widgets/trip_card_widget.dart";
 
 class MyTripsScreen extends StatefulWidget {
@@ -35,7 +37,13 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                       horizontal: 24.0,
                       vertical: 12,
                     ),
-                    child: TripCardWidget.fromTripModel(tripModel: trip),
+                    child: TripCardWidget.fromTripModel(
+                      tripModel: trip,
+                      onTap: () => context.pushNamed(
+                        AppRoute.tripDetail.name,
+                        pathParameters: {"tripId": trip.id},
+                      ),
+                    ),
                   );
                 },
               );
