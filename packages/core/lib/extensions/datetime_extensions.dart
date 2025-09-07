@@ -1,7 +1,8 @@
 import "package:intl/intl.dart";
 
 extension DateFormatting on DateTime {
-  String get ddMMM => DateFormat("dd MMM").format(this);
+  String get ddMMM => format("dd MMM");
+  String get eEEEMMMd => format("EEEE, MMM d");
 
   static DateTime? fromIsoString(String isoString) {
     try {

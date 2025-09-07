@@ -1,3 +1,4 @@
+import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:ui/ui.dart";
 
@@ -5,9 +6,16 @@ import "../../models/interest_point_model.dart";
 import "checkbox_list_card_tile.dart";
 
 class TripDayCard extends StatelessWidget {
-  const TripDayCard({super.key, required this.interestPoints});
+  const TripDayCard({
+    super.key,
+    required this.interestPoints,
+    required this.date,
+    required this.day,
+  });
 
   final List<InterestPointModel> interestPoints;
+  final DateTime date;
+  final int day;
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +35,13 @@ class TripDayCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
         child: Column(
+          spacing: 8,
           children: [
             Row(
               children: [
-                Text("Day 1", style: context.textTheme.titleLarge),
+                Text("Day $day", style: context.textTheme.titleLarge),
                 const Spacer(),
-                const Text("Data del giorno"),
+                Text(date.eEEEMMMd),
               ],
             ),
             ListView.builder(

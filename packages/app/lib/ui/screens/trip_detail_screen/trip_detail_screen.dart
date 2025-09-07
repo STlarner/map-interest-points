@@ -4,7 +4,6 @@ import "package:provider/provider.dart";
 import "package:ui/ui.dart";
 
 import "../../../notifiers/trip_detail_notifier.dart";
-import "../../widgets/checkbox_list_card_tile.dart";
 import "../../widgets/firebase_async_image.dart";
 import "../../widgets/trip_day_card.dart";
 
@@ -35,7 +34,6 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
           ),
           body: CustomScrollView(
             slivers: [
-              /// Collapsible header with image
               SliverAppBar(
                 pinned: true,
                 expandedHeight: 250,
@@ -78,30 +76,43 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    Text(
-                      "${trip.startDate.ddMMM} - ${trip.endDate.ddMMM} · ${trip.days} days",
-                      style: context.textTheme.titleMedium,
+                    ListTile(
+                      title: Text(
+                        "${trip.startDate.ddMMM} - ${trip.endDate.ddMMM} · ${trip.days} days",
+                        style: context.textTheme.titleMedium,
+                      ),
+                      leading: const Icon(Icons.calendar_month),
+                      contentPadding: EdgeInsets.zero,
+                      minVerticalPadding: 0,
+                      dense: true,
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      "${trip.description} · ${trip.interestPoints.length} saved spot",
-                    ),
+                    Text(trip.description),
                   ]),
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                padding: const EdgeInsets.only(
+                  left: 24.0,
+                  right: 24.0,
+                  bottom: 100,
+                ),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    final interestPoint = trip.interestPoints[index];
+                    final entry = tripNotifier.interestPointsByDay.entries
+                        .elementAt(index);
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 24.0),
-                      child: TripDayCard(interestPoints: trip.interestPoints),
+                      child: TripDayCard(
+                        interestPoints: entry.value,
+                        day: index + 1,
+                        date: entry.key,
+                      ),
                     );
-                  }, childCount: trip.interestPoints.length),
+                  }, childCount: tripNotifier.interestPointsByDay.length),
                 ),
               ),
             ],
