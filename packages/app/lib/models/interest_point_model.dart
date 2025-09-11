@@ -1,3 +1,5 @@
+import "package:latlong2/latlong.dart";
+
 class InterestPointModel {
   InterestPointModel({
     required this.title,
@@ -50,6 +52,7 @@ class Coordinates {
 
   final double latitude;
   final double longitude;
+  LatLng get latLng => LatLng(latitude, longitude);
 
   Map<String, dynamic> toJson() {
     return {"_latitude": latitude, "_longitude": longitude};

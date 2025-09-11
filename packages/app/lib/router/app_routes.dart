@@ -1,10 +1,12 @@
 import "package:core/core.dart";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "../notifiers/trip_detail_notifier.dart";
 import "../notifiers/trips_notifier.dart";
 import "../ui/screens/home_screen/home_screen.dart";
 import "../ui/screens/login_screen/login_screen.dart";
+import "../ui/screens/map_screen/map_screen.dart";
 import "../ui/screens/my_trips_screen/my_trips_screen.dart";
 import "../ui/screens/sign_up_screen/sign_up_screen.dart";
 import "../ui/screens/splash_screen/splash_screen.dart";
@@ -17,7 +19,8 @@ enum AppRoute {
   signUp("sign-up", "/login/sign-up"),
   home("home", "/tabs/home"),
   myTrips("my-trips", "/tabs/my-trips"),
-  tripDetail("trip-detail", "trip/:tripId");
+  tripDetail("trip-detail", "trip/:tripId"),
+  map("map", "map");
 
   const AppRoute(this.name, this.path);
 
@@ -59,27 +62,44 @@ class AppRoutes implements RouteProvider {
     path: AppRoute.home.path,
     pageBuilder: (context, state) =>
         const NoTransitionPage(child: HomeScreen()),
-    routes: [tripDetailRoute],
+    routes: [tripDetailShellRoute],
   );
 
-  late final tripDetailRoute = GoRoute(
-    name: AppRoute.tripDetail.name,
-    path: AppRoute.tripDetail.path,
-    builder: (context, state) => ChangeNotifierProvider(
-      create: (_) {
-        final tripsNotifier = context.read<TripsNotifier>();
-        final tripId = state.pathParameters["tripId"];
+  late final tripDetailShellRoute = ShellRoute(
+    builder: (context, state, child) {
+      final tripsNotifier = context.read<TripsNotifier>();
+      final tripId = state.pathParameters["tripId"];
 
-        if (tripId == null) {
-          throw Exception("TripId is null");
-        }
+      if (tripId == null) {
+        throw Exception("TripId is null");
+      }
 
-        final trip = tripsNotifier.allUserTripsState.data!.firstWhere(
-          (trip) => trip.id == tripId,
-        );
-        return TripDetailNotifier(trip: trip);
-      },
-      child: const TripDetailScreen(),
+      final trip = tripsNotifier.allUserTripsState.data!.firstWhere(
+        (trip) => trip.id == tripId,
+      );
+
+      return ChangeNotifierProvider(
+        create: (_) => TripDetailNotifier(trip: trip),
+        child: child,
+      );
+    },
+    routes: [
+      GoRoute(
+        name: AppRoute.tripDetail.name,
+        path: AppRoute.tripDetail.path,
+        routes: [mapRoute],
+        builder: (context, state) => const TripDetailScreen(),
+      ),
+    ],
+  );
+
+  late final mapRoute = GoRoute(
+    name: AppRoute.map.name,
+    path: AppRoute.map.path,
+    pageBuilder: (context, state) => CupertinoPage(
+      key: state.pageKey,
+      child: const MapScreen(),
+      fullscreenDialog: true,
     ),
   );
 

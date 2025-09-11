@@ -5,6 +5,7 @@ import "package:ui/ui.dart";
 
 import "../../../notifiers/async_state.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
+import "../../../router/app_routes.dart";
 import "../../widgets/firebase_async_image.dart";
 import "../../widgets/trip_day_card.dart";
 
@@ -28,7 +29,10 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
             child: FloatingActionButton.extended(
               backgroundColor: context.colorScheme.primary,
               foregroundColor: context.colorScheme.onPrimary,
-              onPressed: () {},
+              onPressed: () => context.pushNamed(
+                AppRoute.map.name,
+                pathParameters: {"tripId": tripNotifier.trip.id},
+              ),
               label: const Text("Open Map"),
               icon: const Icon(Icons.map_outlined, size: 25),
             ),
@@ -36,6 +40,11 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
           body: CustomScrollView(
             slivers: [
               SliverAppBar(
+                leading: BackButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                ),
                 pinned: true,
                 expandedHeight: 250,
                 flexibleSpace: LayoutBuilder(

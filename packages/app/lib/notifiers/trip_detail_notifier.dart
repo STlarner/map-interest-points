@@ -15,6 +15,8 @@ class TripDetailNotifier extends ChangeNotifier {
   AsyncStatus interestPointsStatus = AsyncStatus.initial;
   Map<DateTime, List<InterestPointModel>> interestPointsByDay = {};
 
+  InterestPointModel? draftInterestPoint;
+
   Future<void> fetchInterestPoints() async {
     interestPointsStatus = AsyncStatus.loading;
     GetIt.I<AppRepository>()
@@ -46,5 +48,10 @@ class TripDetailNotifier extends ChangeNotifier {
           result.putIfAbsent(date, () => []).add(interestPoint);
           return result;
         });
+  }
+
+  void addDraftInterestPoint(InterestPointModel interestPoint) {
+    draftInterestPoint = interestPoint;
+    notifyListeners();
   }
 }

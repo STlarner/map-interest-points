@@ -48,20 +48,18 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: CustomScrollView(
               slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.only(
-                    top: 24,
-                    left: 24,
-                    right: 24,
-                    bottom: 16,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      Text(
-                        "Upcoming Trips",
-                        style: context.textTheme.titleLarge,
-                      ),
-                    ]),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 24,
+                      left: 24,
+                      right: 24,
+                      bottom: 16,
+                    ),
+                    child: Text(
+                      "Upcoming Trips",
+                      style: context.textTheme.titleLarge,
+                    ),
                   ),
                 ),
 
