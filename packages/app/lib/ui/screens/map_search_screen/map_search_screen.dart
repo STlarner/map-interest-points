@@ -42,6 +42,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
     return Consumer<TripDetailNotifier>(
       builder: (context, tripNotifier, child) {
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
@@ -50,6 +51,8 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
               statusBarBrightness: Brightness.light,
             ),
             title: TextField(
+              autocorrect: false,
+              textCapitalization: TextCapitalization.none,
               controller: _searchController,
               focusNode: _focusNode,
               onSubmitted: (value) =>
@@ -105,6 +108,14 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
                             .address!
                             .formattedAddress,
                       ),
+                      onTap: () {
+                        final interestPoint = tripNotifier.buildInterestPoint(
+                          tripNotifier.mapSearchResults[index],
+                        );
+                        tripNotifier.addDraftInterestPoint(interestPoint);
+                        tripNotifier.mapSearchQuery = interestPoint.title;
+                        context.pop(interestPoint);
+                      },
                     );
                   },
                 ),

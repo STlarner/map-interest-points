@@ -14,12 +14,12 @@ class TripDetailNotifier extends ChangeNotifier {
 
   final TripModel trip;
   AsyncStatus interestPointsStatus = AsyncStatus.initial;
+  InterestPointModel? draftInterestPoint;
+
   AsyncStatus mapSearchStatus = AsyncStatus.initial;
   Map<DateTime, List<InterestPointModel>> interestPointsByDay = {};
   String? mapSearchQuery;
   List<NominatimOsmSearchModel> mapSearchResults = [];
-
-  InterestPointModel? draftInterestPoint;
 
   Future<void> fetchInterestPoints() async {
     interestPointsStatus = AsyncStatus.loading;
@@ -79,5 +79,14 @@ class TripDetailNotifier extends ChangeNotifier {
     mapSearchResults = [];
     mapSearchStatus = AsyncStatus.initial;
     notifyListeners();
+  }
+
+  InterestPointModel buildInterestPoint(NominatimOsmSearchModel model) {
+    return InterestPointModel(
+      title: model.name!,
+      description: model.address!.formattedAddress,
+      date: DateTime.now(),
+      coordinates: Coordinates(latitude: model.lat, longitude: model.lon),
+    );
   }
 }

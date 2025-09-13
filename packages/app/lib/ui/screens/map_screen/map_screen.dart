@@ -20,16 +20,14 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final MapController _mapController = MapController();
+  double currentZoom = 13;
 
   @override
-  void initState() {
-    final notifier = context.read<TripDetailNotifier>();
-    notifier.addListener(() {
-      if (_searchController.text != notifier.mapSearchQuery) {
-        _searchController.text = notifier.mapSearchQuery ?? "";
-      }
-    });
-    super.initState();
+  void dispose() {
+    _mapController.dispose();
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,7 +54,20 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ),
         title: GestureDetector(
-          onTap: () => context.goNamed(AppRoute.mapSearch.name),
+          onTap: () =>
+              context.pushNamed(AppRoute.mapSearch.name).then((object) {
+                if (context.mounted) {
+                  _searchController.text =
+                      context.read<TripDetailNotifier>().mapSearchQuery ?? "";
+                }
+                if (object != null) {
+                  final interestPoint = object as InterestPointModel;
+                  _mapController.move(
+                    interestPoint.coordinates.latLng,
+                    currentZoom,
+                  );
+                }
+              }),
           child: AbsorbPointer(
             absorbing: true,
             child: TextField(
@@ -81,10 +92,11 @@ class _MapScreenState extends State<MapScreen> {
           ];
 
           return FlutterMap(
+            mapController: _mapController,
             options: MapOptions(
               initialCenter:
                   tripNotifier.trip.interestPoints.first.coordinates.latLng,
-              initialZoom: 13.0,
+              initialZoom: currentZoom,
               onLongPress: (tagPosition, point) {
                 GetIt.I<LogProvider>().log(
                   "Long press at $point",
