@@ -108,10 +108,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             tripsNotifier.upcomingTripsState.data![index];
                         return TripCardWidget.fromTripModel(
                           tripModel: trip,
-                          onTap: () => context.pushNamed(
-                            AppRoute.tripDetail.name,
-                            pathParameters: {"tripId": trip.id},
-                          ),
+                          onTap: () {
+                            tripsNotifier.selectedTrip = trip;
+                            context.pushNamed(AppRoute.tripDetail.name);
+                          },
                         );
                       },
                       itemCount: tripsNotifier.upcomingTripsState.data!.length,

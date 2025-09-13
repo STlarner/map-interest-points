@@ -8,6 +8,8 @@ import "package:url_launcher/url_launcher.dart";
 
 import "../../../models/interest_point_model.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
+import "../../../router/app_routes.dart";
+import "../../extensions/input_decoration_extension.dart";
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
@@ -43,6 +45,21 @@ class MapScreen extends StatelessWidget {
             ),
           ),
         ],
+        title: GestureDetector(
+          onTap: () => context.goNamed(AppRoute.mapSearch.name),
+          child: AbsorbPointer(
+            absorbing: true,
+            child: TextField(
+              keyboardType: TextInputType.emailAddress,
+              autocorrect: false,
+              textCapitalization: TextCapitalization.none,
+              decoration: const InputDecoration(
+                hintText: "Search here...",
+                prefixIcon: Icon(Icons.search),
+              ).withoutBorder(fillColor: context.colorScheme.surface),
+            ),
+          ),
+        ),
       ),
       body: Consumer<TripDetailNotifier>(
         builder: (context, tripNotifier, child) {

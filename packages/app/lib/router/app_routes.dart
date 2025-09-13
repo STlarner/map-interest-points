@@ -7,6 +7,7 @@ import "../notifiers/trips_notifier.dart";
 import "../ui/screens/home_screen/home_screen.dart";
 import "../ui/screens/login_screen/login_screen.dart";
 import "../ui/screens/map_screen/map_screen.dart";
+import "../ui/screens/map_search_screen/map_search_screen.dart";
 import "../ui/screens/my_trips_screen/my_trips_screen.dart";
 import "../ui/screens/sign_up_screen/sign_up_screen.dart";
 import "../ui/screens/splash_screen/splash_screen.dart";
@@ -19,8 +20,9 @@ enum AppRoute {
   signUp("sign-up", "/login/sign-up"),
   home("home", "/tabs/home"),
   myTrips("my-trips", "/tabs/my-trips"),
-  tripDetail("trip-detail", "trip/:tripId"),
-  map("map", "map");
+  tripDetail("trip-detail", "trip-detail"),
+  map("map", "map"),
+  mapSearch("map-search", "map-search");
 
   const AppRoute(this.name, this.path);
 
@@ -68,29 +70,25 @@ class AppRoutes implements RouteProvider {
   late final tripDetailShellRoute = ShellRoute(
     builder: (context, state, child) {
       final tripsNotifier = context.read<TripsNotifier>();
-      final tripId = state.pathParameters["tripId"];
+      final selectedTrip = tripsNotifier.selectedTrip;
 
-      if (tripId == null) {
-        throw Exception("TripId is null");
+      if (selectedTrip == null) {
+        throw Exception("Selected trip is null");
       }
 
-      final trip = tripsNotifier.allUserTripsState.data!.firstWhere(
-        (trip) => trip.id == tripId,
-      );
-
       return ChangeNotifierProvider(
-        create: (_) => TripDetailNotifier(trip: trip),
+        create: (_) => TripDetailNotifier(trip: selectedTrip),
         child: child,
       );
     },
-    routes: [
-      GoRoute(
-        name: AppRoute.tripDetail.name,
-        path: AppRoute.tripDetail.path,
-        routes: [mapRoute],
-        builder: (context, state) => const TripDetailScreen(),
-      ),
-    ],
+    routes: [tripDetailRoute],
+  );
+
+  late final tripDetailRoute = GoRoute(
+    name: AppRoute.tripDetail.name,
+    path: AppRoute.tripDetail.path,
+    routes: [mapRoute],
+    builder: (context, state) => const TripDetailScreen(),
   );
 
   late final mapRoute = GoRoute(
@@ -101,6 +99,18 @@ class AppRoutes implements RouteProvider {
       child: const MapScreen(),
       fullscreenDialog: true,
     ),
+    routes: [mapSearchRoute],
+  );
+
+  late final mapSearchRoute = GoRoute(
+    name: AppRoute.mapSearch.name,
+    path: AppRoute.mapSearch.path,
+    pageBuilder: (context, state) {
+      return NoTransitionPage(
+        key: state.pageKey,
+        child: const MapSearchScreen(),
+      );
+    },
   );
 
   late final myTripsRoute = GoRoute(

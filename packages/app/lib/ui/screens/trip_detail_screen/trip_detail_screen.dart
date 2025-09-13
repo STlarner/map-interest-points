@@ -29,10 +29,7 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
             child: FloatingActionButton.extended(
               backgroundColor: context.colorScheme.primary,
               foregroundColor: context.colorScheme.onPrimary,
-              onPressed: () => context.pushNamed(
-                AppRoute.map.name,
-                pathParameters: {"tripId": tripNotifier.trip.id},
-              ),
+              onPressed: () => context.pushNamed(AppRoute.map.name),
               label: const Text("Open Map"),
               icon: const Icon(Icons.map_outlined, size: 25),
             ),

@@ -11,6 +11,7 @@ class TripsNotifier extends ChangeNotifier {
 
   AsyncState<List<TripModel>> get allUserTripsState => _allUserTripsState;
   AsyncState<List<TripModel>> _allUserTripsState = AsyncState.loading();
+  TripModel? selectedTrip;
 
   AsyncState<List<TripModel>> get upcomingTripsState {
     switch (_allUserTripsState.status) {
