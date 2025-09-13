@@ -57,7 +57,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: "TodoTrips",
+      title: "ToDoTrips",
       routerConfig: router,
       theme: light,
       darkTheme: dark,

@@ -1,5 +1,6 @@
 abstract class NetworkManager {
   String? token;
+  String? overrideBaseUrl; // ovveride base url for a single request
   late final String baseUrl;
 
   /// GET request

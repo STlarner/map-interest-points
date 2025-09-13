@@ -1,13 +1,16 @@
 import "package:core/core.dart";
 
 import "../models/interest_point_model.dart";
+import "../models/nominatim_osm_search_model.dart";
 import "../models/trip_model.dart";
 
 class AppRepository {
   AppRepository();
 
+  late final NetworkManager _networkManager = GetIt.I<NetworkManager>();
+
   Future<List<TripModel>> getAllTrips() async {
-    final data = await GetIt.I<NetworkManager>().get("/trips");
+    final data = await _networkManager.get("/trips");
     final listData = data as List<dynamic>;
     return listData
         .map((trip) => TripModel.fromJson(json: trip as Map<String, dynamic>))
@@ -16,9 +19,7 @@ class AppRepository {
   }
 
   Future<List<InterestPointModel>> getInterestPoints(TripModel trip) async {
-    final data = await GetIt.I<NetworkManager>().get(
-      "/trips/${trip.id}/interest_points",
-    );
+    final data = await _networkManager.get("/trips/${trip.id}/interest_points");
     final listData = data as List<dynamic>;
     return listData
         .map(
@@ -28,5 +29,26 @@ class AppRepository {
         )
         .toList()
       ..sort((a, b) => a.date.compareTo(b.date));
+  }
+
+  Future<List<NominatimOsmSearchModel>> mapSearch(String query) async {
+    _networkManager.overrideBaseUrl = "https://nominatim.openstreetmap.org";
+    final data = await _networkManager.get(
+      "/search",
+      queryParams: {
+        "q": query,
+        "format": "json",
+        "limit": 10,
+        "addressdetails": 1,
+        "accept-language": "en",
+      },
+    );
+    final listData = data as List<dynamic>;
+    return listData
+        .map(
+          (place) =>
+              NominatimOsmSearchModel.fromJson(place as Map<String, dynamic>),
+        )
+        .toList();
   }
 }

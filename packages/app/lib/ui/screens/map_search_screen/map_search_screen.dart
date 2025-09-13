@@ -1,8 +1,11 @@
 import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:provider/provider.dart";
 import "package:ui/extensions/context_extensions/context_color_scheme_extension.dart";
 
+import "../../../notifiers/async_state.dart";
+import "../../../notifiers/trip_detail_notifier.dart";
 import "../../extensions/input_decoration_extension.dart";
 
 class MapSearchScreen extends StatefulWidget {
@@ -18,11 +21,13 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
 
   @override
   void initState() {
-    super.initState();
+    final notifier = context.read<TripDetailNotifier>();
+    _searchController.text = notifier.mapSearchQuery ?? "";
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
+    super.initState();
   }
 
   @override
@@ -34,36 +39,47 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
-        ),
-        title: TextField(
-          controller: _searchController,
-          focusNode: _focusNode,
-          decoration: const InputDecoration(
-            hintText: "Search here...",
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-            prefixIcon: Icon(Icons.search),
-          ).withoutBorder(fillColor: context.colorScheme.tertiaryContainer),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Material(
-              color: context.colorScheme.tertiaryContainer,
-              shape: const CircleBorder(),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () => context.pop(),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+    return Consumer<TripDetailNotifier>(
+      builder: (context, tripNotifier, child) {
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
+            ),
+            title: TextField(
+              controller: _searchController,
+              focusNode: _focusNode,
+              onSubmitted: (value) =>
+                  context.read<TripDetailNotifier>().mapSearch(value),
+              decoration: InputDecoration(
+                hintText: "Search here...",
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 0,
+                ),
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    tripNotifier.clearMapSearch();
+                  },
+                ),
+              ).withoutBorder(fillColor: context.colorScheme.tertiaryContainer),
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Material(
+                color: context.colorScheme.tertiaryContainer,
+                shape: const CircleBorder(),
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => context.pop(),
                   child: Icon(
                     Icons.close,
                     color: context.colorScheme.onTertiaryContainer,
@@ -72,9 +88,28 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
               ),
             ),
           ),
-        ],
-      ),
-      body: const Center(child: Text("Map will go here")),
+          body: tripNotifier.mapSearchStatus == AsyncStatus.loading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.separated(
+                  separatorBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Divider(color: context.colorScheme.secondary),
+                  ),
+                  itemCount: tripNotifier.mapSearchResults.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(tripNotifier.mapSearchResults[index].name!),
+                      subtitle: Text(
+                        tripNotifier
+                            .mapSearchResults[index]
+                            .address!
+                            .formattedAddress,
+                      ),
+                    );
+                  },
+                ),
+        );
+      },
     );
   }
 }

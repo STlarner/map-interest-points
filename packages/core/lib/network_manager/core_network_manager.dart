@@ -73,6 +73,7 @@ class CoreNetworkManager extends NetworkManager {
   Map<String, String> _headers({Map<String, String>? extra}) {
     final headers = {
       "Content-Type": "application/json",
+      "User-Agent": "ToDoTrips",
       if (token != null) "Authorization": "Bearer $token",
     };
     if (extra != null) {
@@ -90,7 +91,8 @@ class CoreNetworkManager extends NetworkManager {
       path = path.replaceAll("{$key}", value.toString());
     });
 
-    final uri = Uri.parse("$baseUrl$path");
+    final uri = Uri.parse("${overrideBaseUrl ?? baseUrl}$path");
+    overrideBaseUrl = null;
 
     if (queryParams != null) {
       return uri.replace(

@@ -11,8 +11,26 @@ import "../../../notifiers/trip_detail_notifier.dart";
 import "../../../router/app_routes.dart";
 import "../../extensions/input_decoration_extension.dart";
 
-class MapScreen extends StatelessWidget {
+class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
+
+  @override
+  State<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    final notifier = context.read<TripDetailNotifier>();
+    notifier.addListener(() {
+      if (_searchController.text != notifier.mapSearchQuery) {
+        _searchController.text = notifier.mapSearchQuery ?? "";
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,31 +43,24 @@ class MapScreen extends StatelessWidget {
           statusBarBrightness: Brightness.light,
         ),
         automaticallyImplyLeading: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Material(
-              color: context.colorScheme.surfaceContainer,
-              shape: const CircleBorder(),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () => context.pop(),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Icon(
-                    Icons.close,
-                    color: context.colorScheme.onSurface,
-                  ),
-                ),
-              ),
+        leading: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Material(
+            color: context.colorScheme.surface,
+            shape: const CircleBorder(),
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () => context.pop(),
+              child: Icon(Icons.close, color: context.colorScheme.onSurface),
             ),
           ),
-        ],
+        ),
         title: GestureDetector(
           onTap: () => context.goNamed(AppRoute.mapSearch.name),
           child: AbsorbPointer(
             absorbing: true,
             child: TextField(
+              controller: _searchController,
               keyboardType: TextInputType.emailAddress,
               autocorrect: false,
               textCapitalization: TextCapitalization.none,
