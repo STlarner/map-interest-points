@@ -5,13 +5,15 @@ class CheckboxListCardTile extends StatefulWidget {
   const CheckboxListCardTile({
     super.key,
     required this.value,
-    this.onChanged,
     required this.title,
     required this.subtitle,
+    this.onChanged,
+    this.onTap,
   });
 
   final bool value;
   final void Function(bool?)? onChanged;
+  final VoidCallback? onTap;
   final String title;
   final String subtitle;
 
@@ -35,15 +37,17 @@ class _CheckboxListCardTileState extends State<CheckboxListCardTile> {
         color: context.colorScheme.tertiaryContainer,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: CheckboxListTile(
-        value: value,
-        onChanged: (bool? newValue) {
-          setState(() {
-            value = newValue!;
-          });
-        },
+      child: ListTile(
         title: Text(widget.title),
         subtitle: Text(widget.subtitle),
+        onTap: widget.onTap,
+        trailing: Checkbox(
+          value: value,
+          onChanged: (bool? newValue) {
+            setState(() => value = newValue!);
+            widget.onChanged?.call(newValue);
+          },
+        ),
       ),
     );
   }

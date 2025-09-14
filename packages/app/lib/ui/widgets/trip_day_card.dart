@@ -11,11 +11,15 @@ class TripDayCard extends StatelessWidget {
     required this.interestPoints,
     required this.date,
     required this.day,
+    this.onChanged,
+    this.onTap,
   });
 
   final List<InterestPointModel> interestPoints;
   final DateTime date;
   final int day;
+  final void Function(bool?)? onChanged;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +61,8 @@ class TripDayCard extends StatelessWidget {
                     value: false,
                     title: interestPoint.title,
                     subtitle: interestPoint.description,
+                    onChanged: onChanged,
+                    onTap: onTap,
                   ),
                 );
               },
