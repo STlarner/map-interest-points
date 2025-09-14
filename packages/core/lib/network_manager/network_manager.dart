@@ -1,5 +1,5 @@
 abstract class NetworkManager {
-  String? token;
+  Future<String?> Function()? getAuthenticationToken;
   String? overrideBaseUrl; // ovveride base url for a single request
   late final String baseUrl;
 

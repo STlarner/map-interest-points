@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 import "dependency_injection/app_dependency_provider.dart";
+import "dependency_injection/session_manager.dart";
 import "firebase_options.dart";
 import "notifiers/progress_indicator_notifier.dart";
 import "notifiers/trips_notifier.dart";
@@ -48,6 +49,8 @@ Future<void> setupFirebase() async {
 
 void setupNetworkManager() {
   GetIt.I.get<NetworkManager>().baseUrl = "https://api-2eaimv2vtq-uc.a.run.app";
+  GetIt.I.get<NetworkManager>().getAuthenticationToken =
+      GetIt.I<SessionManager>().getIdToken;
 }
 
 class App extends StatelessWidget {

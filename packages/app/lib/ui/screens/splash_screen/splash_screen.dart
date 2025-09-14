@@ -34,18 +34,13 @@ class _SplashScreenState extends State<SplashScreen> {
     return const ColoredBox(color: Colors.red);
   }
 
-  //TODO: sistemare get token e navigazione
-  //TODO: il token scade, capire come gestire refresh
   void _onSessionChanged(User? user) {
     if (user != null) {
-      user.getIdToken().then((token) {
-        GetIt.I<NetworkManager>().token = token;
-        if (mounted) {
-          context.goNamed(AppRoute.home.name);
-        }
-      });
+      GetIt.I<LogProvider>().log("User logged in", Severity.info);
+      context.goNamed(AppRoute.home.name);
       return;
     }
+    GetIt.I<LogProvider>().log("User not logged in", Severity.info);
     context.goNamed(AppRoute.login.name);
   }
 }

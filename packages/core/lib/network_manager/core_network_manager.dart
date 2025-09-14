@@ -16,12 +16,14 @@ class CoreNetworkManager extends NetworkManager {
   }) async {
     GetIt.I<LogProvider>().log("GET request to $path", Severity.network);
 
+    final requestHeaders = await _getHeaders(extra: headers);
+
     final uri = _buildUri(
       path,
       queryParams: queryParams,
       pathParams: pathParams,
     );
-    final response = await http.get(uri, headers: _headers(extra: headers));
+    final response = await http.get(uri, headers: requestHeaders);
     return _processResponse(response);
   }
 
@@ -41,9 +43,12 @@ class CoreNetworkManager extends NetworkManager {
       queryParams: queryParams,
       pathParams: pathParams,
     );
+
+    final requestHeaders = await _getHeaders(extra: headers);
+
     final response = await http.post(
       uri,
-      headers: _headers(extra: headers),
+      headers: requestHeaders,
       body: jsonEncode(body),
     );
     return _processResponse(response);
@@ -70,12 +75,19 @@ class CoreNetworkManager extends NetworkManager {
     }
   }
 
-  Map<String, String> _headers({Map<String, String>? extra}) {
+  Future<Map<String, String>> _getHeaders({Map<String, String>? extra}) async {
     final headers = {
       "Content-Type": "application/json",
       "User-Agent": "ToDoTrips",
-      if (token != null) "Authorization": "Bearer $token",
     };
+
+    if (getAuthenticationToken != null) {
+      final token = await getAuthenticationToken!();
+      if (token != null) {
+        headers["Authorization"] = "Bearer $token";
+      }
+    }
+
     if (extra != null) {
       headers.addAll(extra);
     }
