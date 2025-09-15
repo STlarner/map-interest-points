@@ -10,6 +10,7 @@ import "../../../models/interest_point_model.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 import "../../../router/app_routes.dart";
 import "../../extensions/input_decoration_extension.dart";
+import "../interest_point_bottom_sheet/interest_point_bottom_sheet.dart";
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -66,6 +67,11 @@ class _MapScreenState extends State<MapScreen> {
                     interestPoint.coordinates.latLng,
                     currentZoom,
                   );
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    if (context.mounted) {
+                      showInterestPointBottomSheet(context);
+                    }
+                  });
                 }
               }),
           child: AbsorbPointer(
@@ -131,12 +137,7 @@ class _MapScreenState extends State<MapScreen> {
                         width: 80,
                         height: 80,
                         child: GestureDetector(
-                          onTap: () {
-                            GetIt.I<LogProvider>().log(
-                              "Marker tapped!",
-                              Severity.debug,
-                            );
-                          },
+                          onTap: () => showInterestPointBottomSheet(context),
                           child: Icon(
                             Icons.location_pin,
                             color: context.colorScheme.primary,
@@ -163,6 +164,17 @@ class _MapScreenState extends State<MapScreen> {
           );
         },
       ),
+    );
+  }
+
+  void showInterestPointBottomSheet(BuildContext context) {
+    showModalBottomSheet<InterestPointBottomSheet>(
+      isDismissible: true,
+      useSafeArea: true,
+      context: context,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: 0.2),
+      builder: (context) => const InterestPointBottomSheet(),
     );
   }
 }
