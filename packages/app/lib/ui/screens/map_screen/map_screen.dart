@@ -69,7 +69,7 @@ class _MapScreenState extends State<MapScreen> {
                   );
                   Future.delayed(const Duration(milliseconds: 500), () {
                     if (context.mounted) {
-                      showInterestPointBottomSheet(context);
+                      showInterestPointBottomSheet(context, interestPoint);
                     }
                   });
                 }
@@ -104,21 +104,18 @@ class _MapScreenState extends State<MapScreen> {
                   tripNotifier.trip.interestPoints.first.coordinates.latLng,
               initialZoom: currentZoom,
               onLongPress: (tagPosition, point) {
-                GetIt.I<LogProvider>().log(
-                  "Long press at $point",
-                  Severity.debug,
-                );
-                tripNotifier.addDraftInterestPoint(
-                  InterestPointModel(
-                    title: "",
-                    description: "",
-                    date: DateTime.now(),
-                    coordinates: Coordinates(
-                      latitude: point.latitude,
-                      longitude: point.longitude,
-                    ),
+                final interestPoint = InterestPointModel(
+                  title: "",
+                  description: "",
+                  date: DateTime.now(),
+                  coordinates: Coordinates(
+                    latitude: point.latitude,
+                    longitude: point.longitude,
                   ),
                 );
+
+                tripNotifier.addDraftInterestPoint(interestPoint);
+                showInterestPointBottomSheet(context, interestPoint);
               },
               onTap: (tapPosition, point) {
                 GetIt.I<LogProvider>().log("Tapped at $point", Severity.debug);
@@ -130,23 +127,36 @@ class _MapScreenState extends State<MapScreen> {
                 userAgentPackageName: "com.example.mapInterestPoints",
               ),
               MarkerLayer(
-                markers: points
-                    .map(
-                      (point) => Marker(
-                        point: point.coordinates.latLng,
-                        width: 80,
-                        height: 80,
-                        child: GestureDetector(
-                          onTap: () => showInterestPointBottomSheet(context),
-                          child: Icon(
-                            Icons.location_pin,
-                            color: context.colorScheme.primary,
-                            size: 40,
-                          ),
-                        ),
+                markers: points.map((point) {
+                  final isSelected =
+                      point == tripNotifier.selectedInterestPoint;
+                  return Marker(
+                    point: point.coordinates.latLng,
+                    width: 80,
+                    height: 80,
+                    child: GestureDetector(
+                      onTap: () => showInterestPointBottomSheet(context, point),
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child:
+                            Icon(
+                                  Icons.location_pin,
+                                  color: isSelected
+                                      ? context.colorScheme.secondary
+                                      : context.colorScheme.primary,
+                                  size: 40,
+                                )
+                                .animate(target: isSelected ? 1 : 0)
+                                .scaleXY(
+                                  begin: 1.0,
+                                  end: 1.5,
+                                  duration: 300.ms,
+                                  curve: Curves.easeOut,
+                                ),
                       ),
-                    )
-                    .toList(),
+                    ),
+                  );
+                }).toList(),
               ),
 
               RichAttributionWidget(
@@ -167,7 +177,14 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  void showInterestPointBottomSheet(BuildContext context) {
+  void showInterestPointBottomSheet(
+    BuildContext context,
+    InterestPointModel selectedInterestPoint,
+  ) {
+    context.read<TripDetailNotifier>().selectInterestPoint(
+      selectedInterestPoint,
+    );
+
     showModalBottomSheet<InterestPointBottomSheet>(
       isDismissible: true,
       useSafeArea: true,
@@ -175,6 +192,10 @@ class _MapScreenState extends State<MapScreen> {
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withValues(alpha: 0.2),
       builder: (context) => const InterestPointBottomSheet(),
-    );
+    ).then((_) {
+      if (context.mounted) {
+        context.read<TripDetailNotifier>().clearSelectedInterestPoint();
+      }
+    });
   }
 }

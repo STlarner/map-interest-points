@@ -1,3 +1,5 @@
+import "dart:ffi";
+
 import "package:core/core.dart";
 import "package:flutter/material.dart";
 
@@ -15,6 +17,7 @@ class TripDetailNotifier extends ChangeNotifier {
   final TripModel trip;
   AsyncStatus interestPointsStatus = AsyncStatus.initial;
   InterestPointModel? draftInterestPoint;
+  InterestPointModel? selectedInterestPoint;
 
   AsyncStatus mapSearchStatus = AsyncStatus.initial;
   Map<DateTime, List<InterestPointModel>> interestPointsByDay = {};
@@ -88,5 +91,15 @@ class TripDetailNotifier extends ChangeNotifier {
       date: DateTime.now(),
       coordinates: Coordinates(latitude: model.lat, longitude: model.lon),
     );
+  }
+
+  void selectInterestPoint(InterestPointModel interestPoint) {
+    selectedInterestPoint = interestPoint;
+    notifyListeners();
+  }
+
+  void clearSelectedInterestPoint() {
+    selectedInterestPoint = null;
+    notifyListeners();
   }
 }

@@ -71,6 +71,24 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                       border: OutlineInputBorder(),
                     ),
                   ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    spacing: 16,
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          child: const Text("Cancel"),
+                          onPressed: () {},
+                        ),
+                      ),
+                      Expanded(
+                        child: FilledButton(
+                          child: const Text("Save"),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
