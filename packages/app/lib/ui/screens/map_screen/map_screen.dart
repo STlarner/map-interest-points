@@ -105,6 +105,7 @@ class _MapScreenState extends State<MapScreen> {
               initialZoom: currentZoom,
               onLongPress: (tagPosition, point) {
                 final interestPoint = InterestPointModel(
+                  id: "draft",
                   title: "",
                   description: "",
                   date: DateTime.now(),
@@ -127,10 +128,12 @@ class _MapScreenState extends State<MapScreen> {
                 userAgentPackageName: "com.example.mapInterestPoints",
               ),
               MarkerLayer(
+                rotate: true,
                 markers: points.map((point) {
                   final isSelected =
                       point == tripNotifier.selectedInterestPoint;
                   return Marker(
+                    key: ValueKey(point.id),
                     point: point.coordinates.latLng,
                     width: 80,
                     height: 80,
@@ -191,10 +194,12 @@ class _MapScreenState extends State<MapScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withValues(alpha: 0.2),
-      builder: (context) => const InterestPointBottomSheet(),
+      builder: (context) =>
+          InterestPointBottomSheet(interestPoint: selectedInterestPoint),
     ).then((_) {
       if (context.mounted) {
         context.read<TripDetailNotifier>().clearSelectedInterestPoint();
+        context.read<TripDetailNotifier>().clearDraftInterestPoint();
       }
     });
   }

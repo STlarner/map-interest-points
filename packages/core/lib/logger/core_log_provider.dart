@@ -11,13 +11,13 @@ class CoreLogProvider extends LogProvider {
     Logger.root.onRecord.listen((record) {
       String icon;
       switch (record.level.name) {
-        case "SHOUT":
+        case "ERROR":
           icon = "🛑";
         case "WARNING":
           icon = "⚠️";
         case "INFO":
           icon = "ℹ️";
-        case "FINE":
+        case "DEBUG":
           icon = "🐛";
         case "NETWORK":
           icon = "🌐";
@@ -45,7 +45,7 @@ class CoreLogProvider extends LogProvider {
   void log(String message, Severity severity) {
     switch (severity) {
       case Severity.debug:
-        logger.fine(message);
+        logger.debug(message);
       case Severity.info:
         logger.info(message);
       case Severity.warning:
@@ -62,5 +62,15 @@ extension NetworkLogging on Logger {
   void network(Object? message, [Object? error, StackTrace? stackTrace]) {
     const Level network = Level("NETWORK", 800);
     log(network, message, error, stackTrace);
+  }
+
+  void debug(Object? message, [Object? error, StackTrace? stackTrace]) {
+    const Level debug = Level("DEBUG", 500);
+    log(debug, message, error, stackTrace);
+  }
+
+  void error(Object? message, [Object? error, StackTrace? stackTrace]) {
+    const Level error = Level("ERROR", 1200);
+    log(error, message, error, stackTrace);
   }
 }

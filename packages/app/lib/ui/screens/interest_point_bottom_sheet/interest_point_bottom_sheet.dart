@@ -1,8 +1,15 @@
+import "package:core/core.dart";
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 import "package:ui/extensions/context_extensions/context_color_scheme_extension.dart";
 
+import "../../../models/interest_point_model.dart";
+import "../../../notifiers/trip_detail_notifier.dart";
+
 class InterestPointBottomSheet extends StatefulWidget {
-  const InterestPointBottomSheet({super.key});
+  const InterestPointBottomSheet({super.key, required this.interestPoint});
+
+  final InterestPointModel interestPoint;
 
   @override
   State<InterestPointBottomSheet> createState() =>
@@ -12,6 +19,21 @@ class InterestPointBottomSheet extends StatefulWidget {
 class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    _titleController.text = widget.interestPoint.title;
+    _descriptionController.text = widget.interestPoint.description;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +62,7 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
               ),
             ),
             Form(
+              key: _formKey,
               child: Column(
                 spacing: 16,
                 children: [
@@ -59,6 +82,8 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                   ),
                   TextFormField(
                     controller: _descriptionController,
+                    maxLines: 3,
+                    minLines: 1,
                     autocorrect: false,
                     textCapitalization: TextCapitalization.none,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -78,13 +103,38 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                       Expanded(
                         child: OutlinedButton(
                           child: const Text("Cancel"),
-                          onPressed: () {},
+                          onPressed: () {
+                            context.pop();
+                          },
                         ),
                       ),
                       Expanded(
                         child: FilledButton(
                           child: const Text("Save"),
-                          onPressed: () {},
+                          onPressed: () {
+                            final notifier = context.read<TripDetailNotifier>();
+                            if (_formKey.currentState?.validate() == false) {
+                              return;
+                            }
+
+                            /// in this case we are creating a new interest point
+                            if (notifier.draftInterestPoint ==
+                                widget.interestPoint) {
+                              GetIt.I<LogProvider>().log(
+                                "Creating a new interest point from draft",
+                                Severity.debug,
+                              );
+                              return;
+                            }
+
+                            /// else we are updating an existing one
+                            GetIt.I<LogProvider>().log(
+                              "Updating an existing interest point",
+                              Severity.debug,
+                            );
+
+                            context.pop();
+                          },
                         ),
                       ),
                     ],

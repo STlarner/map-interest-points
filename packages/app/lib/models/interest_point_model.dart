@@ -2,6 +2,7 @@ import "package:latlong2/latlong.dart";
 
 class InterestPointModel {
   InterestPointModel({
+    required this.id,
     required this.title,
     required this.description,
     required this.date,
@@ -10,6 +11,7 @@ class InterestPointModel {
 
   factory InterestPointModel.fromJson(Map<String, dynamic> json) {
     return InterestPointModel(
+      id: json["id"] as String,
       title: json["title"] as String,
       description: json["description"] as String,
       date: DateTime.parse(json["date"] as String),
@@ -19,6 +21,7 @@ class InterestPointModel {
     );
   }
 
+  final String id;
   final String title;
   final String description;
   final DateTime date;
@@ -35,7 +38,7 @@ class InterestPointModel {
 
   @override
   String toString() {
-    return "InterestPointModel(title: $title, description: $description, "
+    return "InterestPointModel(id: $id title: $title, description: $description, "
         "date: $date, latitude: ${coordinates.latitude}, longitude: ${coordinates.longitude})";
   }
 }
