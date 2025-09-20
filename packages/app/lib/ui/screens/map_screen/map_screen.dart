@@ -2,6 +2,7 @@ import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_map/flutter_map.dart";
+import "package:latlong2/latlong.dart";
 import "package:provider/provider.dart";
 import "package:ui/ui.dart";
 import "package:url_launcher/url_launcher.dart";
@@ -101,7 +102,13 @@ class _MapScreenState extends State<MapScreen> {
             mapController: _mapController,
             options: MapOptions(
               initialCenter:
-                  tripNotifier.trip.interestPoints.first.coordinates.latLng,
+                  tripNotifier
+                      .trip
+                      .interestPoints
+                      .firstOrNull
+                      ?.coordinates
+                      .latLng ??
+                  const LatLng(40.7128, -74.0060),
               initialZoom: currentZoom,
               onLongPress: (tagPosition, point) {
                 final interestPoint = InterestPointModel(

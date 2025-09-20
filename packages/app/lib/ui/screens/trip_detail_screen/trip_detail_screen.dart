@@ -23,7 +23,7 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
       builder: (context, tripNotifier, child) {
         final trip = tripNotifier.trip;
         final isFloatingButtonEnabled =
-            tripNotifier.trip.interestPoints.isNotEmpty;
+            tripNotifier.interestPointsStatus == AsyncStatus.success;
 
         return Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
