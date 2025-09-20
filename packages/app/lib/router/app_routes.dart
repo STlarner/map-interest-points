@@ -1,5 +1,4 @@
 import "package:core/core.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "../notifiers/trip_detail_notifier.dart";
@@ -13,6 +12,7 @@ import "../ui/screens/sign_up_screen/sign_up_screen.dart";
 import "../ui/screens/splash_screen/splash_screen.dart";
 import "../ui/screens/trip_detail_screen/trip_detail_screen.dart";
 import "../ui/widgets/floating_bottom_navigation_bar.dart";
+import "back_gesture_shell_wrapper.dart";
 
 enum AppRoute {
   splash("splash", "/"),
@@ -76,9 +76,11 @@ class AppRoutes implements RouteProvider {
         throw Exception("Selected trip is null");
       }
 
-      return ChangeNotifierProvider(
-        create: (_) => TripDetailNotifier(trip: selectedTrip),
-        child: child,
+      return BackGestureShellWrapper(
+        child: ChangeNotifierProvider(
+          create: (_) => TripDetailNotifier(trip: selectedTrip),
+          child: child,
+        ),
       );
     },
     routes: [tripDetailRoute],
@@ -94,7 +96,7 @@ class AppRoutes implements RouteProvider {
   late final mapRoute = GoRoute(
     name: AppRoute.map.name,
     path: AppRoute.map.path,
-    pageBuilder: (context, state) => CupertinoPage(
+    pageBuilder: (context, state) => MaterialPage(
       key: state.pageKey,
       child: const MapScreen(),
       fullscreenDialog: true,
