@@ -22,14 +22,21 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
     return Consumer<TripDetailNotifier>(
       builder: (context, tripNotifier, child) {
         final trip = tripNotifier.trip;
+        final isFloatingButtonEnabled =
+            tripNotifier.trip.interestPoints.isNotEmpty;
+
         return Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: Padding(
             padding: const EdgeInsets.only(bottom: 24),
             child: FloatingActionButton.extended(
-              backgroundColor: context.colorScheme.primary,
+              backgroundColor: isFloatingButtonEnabled
+                  ? context.colorScheme.primary
+                  : context.colorScheme.primary.withValues(alpha: 0.3),
               foregroundColor: context.colorScheme.onPrimary,
-              onPressed: () => context.pushNamed(AppRoute.map.name),
+              onPressed: !isFloatingButtonEnabled
+                  ? null
+                  : () => context.pushNamed(AppRoute.map.name),
               label: const Text("Open Map"),
               icon: const Icon(Icons.map_outlined, size: 25),
             ),
