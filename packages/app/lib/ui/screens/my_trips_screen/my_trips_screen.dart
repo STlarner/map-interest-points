@@ -21,6 +21,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
       appBar: AppBar(title: const Text("My Trips")),
       body: Consumer<TripsNotifier>(
         builder: (context, tripsNotifier, child) {
+          // FIXME(Lo): gestire lo shimmer sul caricamento e l'errore
           switch (tripsNotifier.allUserTripsState.status) {
             case AsyncStatus.initial:
             case AsyncStatus.loading:
@@ -39,10 +40,10 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                     ),
                     child: TripCardWidget.fromTripModel(
                       tripModel: trip,
-                      onTap: () => context.pushNamed(
-                        AppRoute.tripDetail.name,
-                        pathParameters: {"tripId": trip.id},
-                      ),
+                      onTap: () {
+                        tripsNotifier.selectedTrip = trip;
+                        context.pushNamed(AppRoute.tripDetail.name);
+                      },
                     ),
                   );
                 },

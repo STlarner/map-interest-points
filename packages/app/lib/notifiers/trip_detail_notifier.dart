@@ -39,6 +39,7 @@ class TripDetailNotifier extends ChangeNotifier {
   /// fetches interest points from the trip
   Future<void> fetchInterestPoints() async {
     interestPointsStatus = AsyncStatus.loading;
+    notifyListeners();
     GetIt.I<AppRepository>()
         .getInterestPoints(trip)
         .then((interestPoints) {
@@ -50,6 +51,7 @@ class TripDetailNotifier extends ChangeNotifier {
         })
         .catchError((_) {
           interestPointsStatus = AsyncStatus.error;
+          notifyListeners();
         });
   }
 

@@ -63,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
+                // FIXME(Lo): gestire lo stato di errore
                 if (tripsNotifier.upcomingTripsState.status ==
                     AsyncStatus.loading)
                   SliverPadding(
@@ -92,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
+                // FIXME(Lo): rimuovere il wrapper attorno ad async status
                 if (tripsNotifier.upcomingTripsState.status ==
                     AsyncStatus.success)
                   SliverPadding(

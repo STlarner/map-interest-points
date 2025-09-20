@@ -151,6 +151,26 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                     itemCount: tripNotifier.interestPointsByDay.length,
                   ),
                 ),
+
+              if (tripNotifier.interestPointsStatus == AsyncStatus.error)
+                SliverToBoxAdapter(
+                  child: MaterialBanner(
+                    backgroundColor: Colors.red.shade100,
+                    elevation: 2,
+                    content: Text(
+                      "Oops! We couldn’t load your trip plan right now. Please try again later.",
+                      style: TextStyle(color: Colors.red.shade900),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          tripNotifier.fetchInterestPoints();
+                        },
+                        child: const Text("Load again"),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         );
