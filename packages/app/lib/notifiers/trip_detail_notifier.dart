@@ -79,8 +79,17 @@ class TripDetailNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// clears the draft interest point
   void clearDraftInterestPoint() {
     draftInterestPoint = null;
+    notifyListeners();
+  }
+
+  /// add a draft interest point to the trip, doesn't clear the draft
+  void promoteDraftInterestPointToExisting() {
+    trip.interestPoints.add(draftInterestPoint!);
+    trip.interestPoints.sort((a, b) => a.date.compareTo(b.date));
+    mapInterestPointsByDay();
     notifyListeners();
   }
 

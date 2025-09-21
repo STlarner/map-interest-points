@@ -37,6 +37,7 @@ class CoreNetworkManager extends NetworkManager {
     dynamic body,
   }) async {
     GetIt.I<LogProvider>().log("POST request to $path", Severity.network);
+    GetIt.I<LogProvider>().log("Body: $body", Severity.network);
 
     final uri = _buildUri(
       path,
@@ -51,6 +52,82 @@ class CoreNetworkManager extends NetworkManager {
       headers: requestHeaders,
       body: jsonEncode(body),
     );
+    return _processResponse(response);
+  }
+
+  /// PUT request
+  @override
+  Future<dynamic> put(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? pathParams,
+    Map<String, String>? headers,
+    dynamic body,
+  }) async {
+    GetIt.I<LogProvider>().log("PUT request to $path", Severity.network);
+
+    final uri = _buildUri(
+      path,
+      queryParams: queryParams,
+      pathParams: pathParams,
+    );
+
+    final requestHeaders = await _getHeaders(extra: headers);
+
+    final response = await http.put(
+      uri,
+      headers: requestHeaders,
+      body: jsonEncode(body),
+    );
+    return _processResponse(response);
+  }
+
+  /// PATCH request
+  @override
+  Future<dynamic> patch(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? pathParams,
+    Map<String, String>? headers,
+    dynamic body,
+  }) async {
+    GetIt.I<LogProvider>().log("PATCH request to $path", Severity.network);
+
+    final uri = _buildUri(
+      path,
+      queryParams: queryParams,
+      pathParams: pathParams,
+    );
+
+    final requestHeaders = await _getHeaders(extra: headers);
+
+    final response = await http.patch(
+      uri,
+      headers: requestHeaders,
+      body: jsonEncode(body),
+    );
+    return _processResponse(response);
+  }
+
+  /// DELETE request
+  @override
+  Future<dynamic> delete(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? pathParams,
+    Map<String, String>? headers,
+  }) async {
+    GetIt.I<LogProvider>().log("DELETE request to $path", Severity.network);
+
+    final uri = _buildUri(
+      path,
+      queryParams: queryParams,
+      pathParams: pathParams,
+    );
+
+    final requestHeaders = await _getHeaders(extra: headers);
+
+    final response = await http.delete(uri, headers: requestHeaders);
     return _processResponse(response);
   }
 

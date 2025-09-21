@@ -22,10 +22,10 @@ class InterestPointModel {
   }
 
   final String id;
-  final String title;
-  final String description;
-  final DateTime date;
-  final Coordinates coordinates;
+  String title;
+  String description;
+  DateTime date;
+  Coordinates coordinates;
 
   Map<String, dynamic> toJson() {
     return {
@@ -58,6 +58,6 @@ class Coordinates {
   LatLng get latLng => LatLng(latitude, longitude);
 
   Map<String, dynamic> toJson() {
-    return {"_latitude": latitude, "_longitude": longitude};
+    return {"latitude": latitude, "longitude": longitude};
   }
 }

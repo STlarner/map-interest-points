@@ -73,5 +73,186 @@ router.get("/:tripId/interest_points", authMiddleware, async (req, res) => {
     }
 });
 
+/// POST /trips/:tripId/interest_points
+router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
+    try {
+        const user = (req as any).user;
+        const uid = user.uid;
+        const { tripId } = req.params;
+
+        if (!tripId) {
+            return res.status(400).json({ error: "Missing tripId parameter" });
+        }
+
+        const { title, description, coordinates, date } = req.body;
+
+        // Validate mandatory fields
+        if (!title || !description || !coordinates || !date) {
+            return res.status(400).json({
+                error: "Missing required fields: title, description, coordinates, date",
+            });
+        }
+
+        if (
+            typeof coordinates.latitude !== "number" ||
+            typeof coordinates.longitude !== "number"
+        ) {
+            return res.status(400).json({
+                error:
+                    "Invalid coordinates format. Expected { latitude: number, longitude: number }",
+            });
+        }
+
+        // Parse date (ISO 8601)
+        const jsDate = new Date(date);
+        if (isNaN(jsDate.getTime())) {
+            return res
+                .status(400)
+                .json({ error: "Invalid date format, expected ISO 8601 string" });
+        }
+
+        const parsedDate = admin.firestore.Timestamp.fromDate(jsDate);
+
+        const interestPointsRef = admin
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .collection("trips")
+            .doc(tripId)
+            .collection("interest_points");
+
+        const newPointRef = interestPointsRef.doc();
+
+        const newPoint = {
+            title,
+            description,
+            coordinates: new admin.firestore.GeoPoint(
+                coordinates.latitude,
+                coordinates.longitude
+            ),
+            date: parsedDate,
+            created_at: admin.firestore.FieldValue.serverTimestamp(),
+        };
+
+        await newPointRef.set(newPoint);
+
+        return res.status(201).json({
+            id: newPointRef.id,
+            title,
+            description,
+            coordinates,
+            date, // echo back ISO string client sent
+        });
+    } catch (err) {
+        console.error("Error adding interest point:", err);
+        return res.status(500).json({ error: "Failed to add interest point" });
+    }
+});
+
+
+/// PATCH /trips/:tripId/interest_points/:pointId
+/// Update an existing interest point
+router.patch("/:tripId/interest_points/:pointId", authMiddleware, async (req, res) => {
+    try {
+        const user = (req as any).user;
+        const uid = user.uid;
+        const { tripId, pointId } = req.params;
+
+        if (!tripId || !pointId) {
+            return res.status(400).json({ error: "Missing tripId or pointId parameter" });
+        }
+
+        const { title, description, coordinates, date } = req.body;
+
+        const updates: any = {};
+
+        if (title !== undefined) updates.title = title;
+        if (description !== undefined) updates.description = description;
+
+        if (coordinates !== undefined) {
+            if (
+                typeof coordinates.latitude !== "number" ||
+                typeof coordinates.longitude !== "number"
+            ) {
+                return res.status(400).json({
+                    error: "Invalid coordinates format. Expected { latitude: number, longitude: number }",
+                });
+            }
+            updates.coordinates = new admin.firestore.GeoPoint(
+                coordinates.latitude,
+                coordinates.longitude
+            );
+        }
+
+        if (date !== undefined) {
+            const jsDate = new Date(date);
+            if (isNaN(jsDate.getTime())) {
+                return res.status(400).json({ error: "Invalid date format, expected ISO 8601 string" });
+            }
+            updates.date = admin.firestore.Timestamp.fromDate(jsDate);
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ error: "No valid fields provided to update" });
+        }
+
+        updates.updated_at = admin.firestore.FieldValue.serverTimestamp();
+
+        const pointRef = admin
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .collection("trips")
+            .doc(tripId)
+            .collection("interest_points")
+            .doc(pointId);
+
+        await pointRef.update(updates);
+
+        return res.status(200).json({
+            id: pointId,
+            ...req.body,
+        });
+    } catch (err) {
+        console.error("Error updating interest point:", err);
+        return res.status(500).json({ error: "Failed to update interest point" });
+    }
+});
+
+
+/// DELETE /trips/:tripId/interest_points/:pointId
+/// Delete an interest point from a trip
+router.delete("/:tripId/interest_points/:pointId", authMiddleware, async (req, res) => {
+    try {
+        const user = (req as any).user;
+        const uid = user.uid;
+        const { tripId, pointId } = req.params;
+
+        if (!tripId || !pointId) {
+            return res.status(400).json({ error: "Missing tripId or pointId parameter" });
+        }
+
+        const pointRef = admin
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .collection("trips")
+            .doc(tripId)
+            .collection("interest_points")
+            .doc(pointId);
+
+        const doc = await pointRef.get();
+        if (!doc.exists) {
+            return res.status(404).json({ error: "Interest point not found" });
+        }
+
+        await pointRef.delete();
+
+        return res.status(200).json({ message: "Interest point deleted successfully", id: pointId });
+    } catch (err) {
+        console.error("Error deleting interest point:", err);
+        return res.status(500).json({ error: "Failed to delete interest point" });
+    }
+});
 
 export default router;

@@ -51,4 +51,36 @@ class AppRepository {
         )
         .toList();
   }
+
+  Future<void> addInterestPoint(
+    TripModel trip,
+    InterestPointModel interestPoint,
+  ) async {
+    final data = await _networkManager.post(
+      "/trips/${trip.id}/interest_points",
+      body: interestPoint.toJson(),
+    );
+    return data;
+  }
+
+  Future<void> updateInterestPoint(
+    TripModel trip,
+    InterestPointModel interestPoint,
+  ) async {
+    final data = await _networkManager.patch(
+      "/trips/${trip.id}/interest_points/${interestPoint.id}",
+      body: interestPoint.toJson(),
+    );
+    return data;
+  }
+
+  Future<void> deleteInterestPoint(
+    TripModel trip,
+    InterestPointModel interestPoint,
+  ) async {
+    final data = await _networkManager.delete(
+      "/trips/${trip.id}/interest_points/${interestPoint.id}",
+    );
+    return data;
+  }
 }

@@ -3,7 +3,9 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:ui/extensions/context_extensions/context_color_scheme_extension.dart";
 
+import "../../../dependency_injection/app_repository.dart";
 import "../../../models/interest_point_model.dart";
+import "../../../notifiers/progress_indicator_notifier.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 
 class InterestPointBottomSheet extends StatefulWidget {
@@ -124,6 +126,40 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                                 "Creating a new interest point from draft",
                                 Severity.debug,
                               );
+
+                              widget.interestPoint.title =
+                                  _titleController.text;
+                              widget.interestPoint.description =
+                                  _descriptionController.text;
+
+                              context.read<ProgressIndicatorNotifier>().show();
+                              GetIt.I<AppRepository>()
+                                  .addInterestPoint(
+                                    notifier.trip,
+                                    widget.interestPoint,
+                                  )
+                                  .whenComplete(() {
+                                    if (context.mounted) {
+                                      context
+                                          .read<ProgressIndicatorNotifier>()
+                                          .hide();
+                                    }
+                                  })
+                                  .then((value) {
+                                    notifier
+                                        .promoteDraftInterestPointToExisting();
+                                    if (context.mounted) {
+                                      context.pop();
+                                    }
+                                  })
+                                  .catchError((dynamic error) {
+                                    if (context.mounted) {
+                                      _showErrorBanner(
+                                        context,
+                                        error.toString(),
+                                      );
+                                    }
+                                  });
                               return;
                             }
 
@@ -146,5 +182,33 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
         ),
       ),
     );
+  }
+
+  void _showErrorBanner(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        content: Text(
+          message,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onErrorContainer,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+            },
+            child: const Text("DISMISS"),
+          ),
+        ],
+      ),
+    );
+
+    Future.delayed(const Duration(seconds: 3), () {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+      }
+    });
   }
 }

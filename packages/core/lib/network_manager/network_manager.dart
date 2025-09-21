@@ -19,4 +19,30 @@ abstract class NetworkManager {
     Map<String, String>? headers,
     dynamic body,
   });
+
+  /// PUT request
+  Future<dynamic> put(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? pathParams,
+    Map<String, String>? headers,
+    dynamic body,
+  });
+
+  /// PATCH request
+  Future<dynamic> patch(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? pathParams,
+    Map<String, String>? headers,
+    dynamic body,
+  });
+
+  /// DELETE request
+  Future<dynamic> delete(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? pathParams,
+    Map<String, String>? headers,
+  });
 }
