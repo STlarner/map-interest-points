@@ -169,6 +169,8 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                               Severity.debug,
                             );
 
+                            //TODO(Lo): gestire l'aggiornamento di un interest point esistente
+
                             context.pop();
                           },
                         ),

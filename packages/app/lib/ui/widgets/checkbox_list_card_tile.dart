@@ -5,6 +5,7 @@ class CheckboxListCardTile extends StatefulWidget {
   const CheckboxListCardTile({
     super.key,
     required this.value,
+    required this.id,
     required this.title,
     required this.subtitle,
     this.onChanged,
@@ -14,6 +15,7 @@ class CheckboxListCardTile extends StatefulWidget {
   final bool value;
   final void Function(bool?)? onChanged;
   final VoidCallback? onTap;
+  final String id;
   final String title;
   final String subtitle;
 

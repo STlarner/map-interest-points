@@ -153,6 +153,14 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                         interestPoints: entry.value,
                         day: index + 1,
                         date: entry.key,
+                        onTap: (id) {
+                          tripNotifier.selectInterestPoint(
+                            tripNotifier.trip.interestPoints.firstWhere(
+                              (element) => element.id == id,
+                            ),
+                          );
+                          context.pushNamed(AppRoute.map.name);
+                        },
                       );
                     },
                     itemCount: tripNotifier.interestPointsByDay.length,

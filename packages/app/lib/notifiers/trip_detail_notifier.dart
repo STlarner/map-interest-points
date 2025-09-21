@@ -1,5 +1,6 @@
 import "package:core/core.dart";
 import "package:flutter/material.dart";
+import "package:latlong2/latlong.dart";
 
 import "../dependency_injection/app_repository.dart";
 import "../models/interest_point_model.dart";
@@ -91,6 +92,18 @@ class TripDetailNotifier extends ChangeNotifier {
     trip.interestPoints.sort((a, b) => a.date.compareTo(b.date));
     mapInterestPointsByDay();
     notifyListeners();
+  }
+
+  LatLng getMapInitialCenter() {
+    if (trip.interestPoints.isEmpty) {
+      return const LatLng(40.7128, -74.0060);
+    }
+
+    if (selectedInterestPoint != null) {
+      return selectedInterestPoint!.coordinates.latLng;
+    }
+
+    return trip.interestPoints.first.coordinates.latLng;
   }
 
   /// searches for interest points in the map

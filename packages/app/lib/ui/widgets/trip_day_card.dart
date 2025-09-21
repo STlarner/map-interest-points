@@ -18,8 +18,8 @@ class TripDayCard extends StatelessWidget {
   final List<InterestPointModel> interestPoints;
   final DateTime date;
   final int day;
-  final void Function(bool?)? onChanged;
-  final VoidCallback? onTap;
+  final void Function(String, bool?)? onChanged;
+  final void Function(String)? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +59,12 @@ class TripDayCard extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: CheckboxListCardTile(
                     value: false,
+                    id: interestPoint.id,
                     title: interestPoint.title,
                     subtitle: interestPoint.description,
-                    onChanged: onChanged,
-                    onTap: onTap,
+                    onChanged: (value) =>
+                        onChanged?.call(interestPoint.id, value),
+                    onTap: () => onTap?.call(interestPoint.id),
                   ),
                 );
               },
