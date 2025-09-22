@@ -52,7 +52,7 @@ class AppRepository {
         .toList();
   }
 
-  Future<void> addInterestPoint(
+  Future<InterestPointModel> addInterestPoint(
     TripModel trip,
     InterestPointModel interestPoint,
   ) async {
@@ -60,7 +60,7 @@ class AppRepository {
       "/trips/${trip.id}/interest_points",
       body: interestPoint.toJson(),
     );
-    return data;
+    return InterestPointModel.fromJson(data as Map<String, dynamic>);
   }
 
   Future<void> updateInterestPoint(

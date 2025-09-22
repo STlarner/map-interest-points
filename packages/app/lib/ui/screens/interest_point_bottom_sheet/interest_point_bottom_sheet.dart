@@ -7,6 +7,7 @@ import "../../../dependency_injection/app_repository.dart";
 import "../../../models/interest_point_model.dart";
 import "../../../notifiers/progress_indicator_notifier.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
+import "../../extensions/ui_context_extension.dart";
 
 class InterestPointBottomSheet extends StatefulWidget {
   const InterestPointBottomSheet({super.key, required this.interestPoint});
@@ -145,19 +146,18 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                                           .hide();
                                     }
                                   })
-                                  .then((value) {
+                                  .then((point) {
                                     notifier
-                                        .promoteDraftInterestPointToExisting();
+                                        .promoteDraftInterestPointToExisting(
+                                          point.id,
+                                        );
                                     if (context.mounted) {
                                       context.pop();
                                     }
                                   })
                                   .catchError((dynamic error) {
                                     if (context.mounted) {
-                                      _showErrorBanner(
-                                        context,
-                                        error.toString(),
-                                      );
+                                      context.showErrorBanner(error.toString());
                                     }
                                   });
                               return;
@@ -184,33 +184,5 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
         ),
       ),
     );
-  }
-
-  void _showErrorBanner(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showMaterialBanner(
-      MaterialBanner(
-        backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        content: Text(
-          message,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onErrorContainer,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-            },
-            child: const Text("DISMISS"),
-          ),
-        ],
-      ),
-    );
-
-    Future.delayed(const Duration(seconds: 3), () {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-      }
-    });
   }
 }

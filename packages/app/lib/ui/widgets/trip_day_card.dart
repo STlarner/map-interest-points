@@ -11,15 +11,19 @@ class TripDayCard extends StatelessWidget {
     required this.interestPoints,
     required this.date,
     required this.day,
+    required this.showDeleteButton,
     this.onChanged,
     this.onTap,
+    this.onDeleteTap,
   });
 
   final List<InterestPointModel> interestPoints;
   final DateTime date;
   final int day;
+  final bool showDeleteButton;
   final void Function(String, bool?)? onChanged;
   final void Function(String)? onTap;
+  final void Function(String)? onDeleteTap;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +47,7 @@ class TripDayCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text("Day $day", style: context.textTheme.titleLarge),
+                Text("Day $day", style: context.textTheme.titleMedium),
                 const Spacer(),
                 Text(date.eEEEMMMd),
               ],
@@ -62,9 +66,11 @@ class TripDayCard extends StatelessWidget {
                     id: interestPoint.id,
                     title: interestPoint.title,
                     subtitle: interestPoint.description,
+                    showDeleteButton: showDeleteButton,
                     onChanged: (value) =>
                         onChanged?.call(interestPoint.id, value),
                     onTap: () => onTap?.call(interestPoint.id),
+                    onDeleteTap: () => onDeleteTap?.call(interestPoint.id),
                   ),
                 );
               },

@@ -74,6 +74,12 @@ class TripDetailNotifier extends ChangeNotifier {
         });
   }
 
+  void deleteInterestPoint(InterestPointModel interestPoint) {
+    trip.interestPoints.remove(interestPoint);
+    mapInterestPointsByDay();
+    notifyListeners();
+  }
+
   /// adds a draft interest point from map search or long press
   void addDraftInterestPoint(InterestPointModel interestPoint) {
     draftInterestPoint = interestPoint;
@@ -87,7 +93,9 @@ class TripDetailNotifier extends ChangeNotifier {
   }
 
   /// add a draft interest point to the trip, doesn't clear the draft
-  void promoteDraftInterestPointToExisting() {
+  /// Note: it also updates the id of the draft interest point with the one returned by the server
+  void promoteDraftInterestPointToExisting(String id) {
+    draftInterestPoint!.id = id;
     trip.interestPoints.add(draftInterestPoint!);
     trip.interestPoints.sort((a, b) => a.date.compareTo(b.date));
     mapInterestPointsByDay();

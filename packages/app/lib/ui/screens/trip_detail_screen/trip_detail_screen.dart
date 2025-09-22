@@ -3,9 +3,12 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:ui/ui.dart";
 
+import "../../../dependency_injection/app_repository.dart";
 import "../../../notifiers/async_state.dart";
+import "../../../notifiers/progress_indicator_notifier.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 import "../../../router/app_routes.dart";
+import "../../extensions/ui_context_extension.dart";
 import "../../widgets/firebase_async_image.dart";
 import "../../widgets/trip_day_card.dart";
 
@@ -17,6 +20,8 @@ class TripDetailScreen extends StatefulWidget {
 }
 
 class _TripDetailScreenState extends State<TripDetailScreen> {
+  final ValueNotifier<bool> _isEditModeEnabled = ValueNotifier<bool>(false);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TripDetailNotifier>(
@@ -107,6 +112,35 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 32)),
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  left: 24.0,
+                  right: 24.0,
+                  bottom: 20,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Row(
+                    children: [
+                      Text(
+                        "${tripNotifier.trip.interestPoints.length} Points of interest",
+                        style: context.textTheme.titleLarge,
+                      ),
+                      const Spacer(),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: _isEditModeEnabled,
+                        builder: (context, bool value, child) {
+                          return TextButton.icon(
+                            onPressed: () => _isEditModeEnabled.value =
+                                !_isEditModeEnabled.value,
+                            label: Text(value ? "Stop Editing" : "Edit"),
+                            icon: const Icon(Icons.edit),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
               if (tripNotifier.interestPointsStatus == AsyncStatus.loading)
                 SliverPadding(
@@ -149,17 +183,45 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                     itemBuilder: (context, index) {
                       final entry = tripNotifier.interestPointsByDay.entries
                           .elementAt(index);
-                      return TripDayCard(
-                        interestPoints: entry.value,
-                        day: index + 1,
-                        date: entry.key,
-                        onTap: (id) {
-                          tripNotifier.selectInterestPoint(
-                            tripNotifier.trip.interestPoints.firstWhere(
-                              (element) => element.id == id,
-                            ),
+                      return ValueListenableBuilder<bool>(
+                        valueListenable: _isEditModeEnabled,
+                        builder: (context, bool value, child) {
+                          return TripDayCard(
+                            showDeleteButton: value,
+                            interestPoints: entry.value,
+                            day: index + 1,
+                            date: entry.key,
+                            onTap: (id) {
+                              tripNotifier.selectInterestPoint(
+                                tripNotifier.trip.interestPoints.firstWhere(
+                                  (element) => element.id == id,
+                                ),
+                              );
+                              context.pushNamed(AppRoute.map.name);
+                            },
+                            onDeleteTap: (id) {
+                              final point = tripNotifier.trip.interestPoints
+                                  .firstWhere((element) => element.id == id);
+                              context.read<ProgressIndicatorNotifier>().show();
+                              GetIt.I<AppRepository>()
+                                  .deleteInterestPoint(trip, point)
+                                  .then((_) {
+                                    tripNotifier.deleteInterestPoint(point);
+                                  })
+                                  .catchError((dynamic error) {
+                                    if (context.mounted) {
+                                      context.showErrorBanner(error.toString());
+                                    }
+                                  })
+                                  .whenComplete(() {
+                                    if (context.mounted) {
+                                      context
+                                          .read<ProgressIndicatorNotifier>()
+                                          .hide();
+                                    }
+                                  });
+                            },
                           );
-                          context.pushNamed(AppRoute.map.name);
                         },
                       );
                     },

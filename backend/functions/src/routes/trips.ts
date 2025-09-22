@@ -4,9 +4,19 @@ import authMiddleware from "../middleware/auth";
 
 const router = Router();
 
+/// Helper: normalize GeoPoint -> { latitude, longitude }
+function normalizeCoordinates(coords: any) {
+    if (!coords) return null;
+    if (coords instanceof admin.firestore.GeoPoint) {
+        return { latitude: coords.latitude, longitude: coords.longitude };
+    }
+    if (typeof coords.latitude === "number" && typeof coords.longitude === "number") {
+        return { latitude: coords.latitude, longitude: coords.longitude };
+    }
+    return null;
+}
 
 /// GET /trips
-/// Get all trips of the user
 router.get("/", authMiddleware, async (req, res) => {
     try {
         const user = (req as any).user;
@@ -34,7 +44,6 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 /// GET /trips/:tripId/interest_points
-/// Get all interest points of a trip
 router.get("/:tripId/interest_points", authMiddleware, async (req, res) => {
     try {
         const user = (req as any).user;
@@ -61,8 +70,7 @@ router.get("/:tripId/interest_points", authMiddleware, async (req, res) => {
                 id: doc.id,
                 ...data,
                 date: data.date?.toDate().toISOString(),
-                latitude: data.latitude,
-                longitude: data.longitude,
+                coordinates: normalizeCoordinates(data.coordinates),
             };
         });
 
@@ -86,7 +94,6 @@ router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
 
         const { title, description, coordinates, date } = req.body;
 
-        // Validate mandatory fields
         if (!title || !description || !coordinates || !date) {
             return res.status(400).json({
                 error: "Missing required fields: title, description, coordinates, date",
@@ -98,17 +105,13 @@ router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
             typeof coordinates.longitude !== "number"
         ) {
             return res.status(400).json({
-                error:
-                    "Invalid coordinates format. Expected { latitude: number, longitude: number }",
+                error: "Invalid coordinates format. Expected { latitude: number, longitude: number }",
             });
         }
 
-        // Parse date (ISO 8601)
         const jsDate = new Date(date);
         if (isNaN(jsDate.getTime())) {
-            return res
-                .status(400)
-                .json({ error: "Invalid date format, expected ISO 8601 string" });
+            return res.status(400).json({ error: "Invalid date format, expected ISO 8601 string" });
         }
 
         const parsedDate = admin.firestore.Timestamp.fromDate(jsDate);
@@ -140,8 +143,8 @@ router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
             id: newPointRef.id,
             title,
             description,
-            coordinates,
-            date, // echo back ISO string client sent
+            coordinates: normalizeCoordinates(newPoint.coordinates),
+            date: jsDate.toISOString(),
         });
     } catch (err) {
         console.error("Error adding interest point:", err);
@@ -149,9 +152,7 @@ router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
     }
 });
 
-
 /// PATCH /trips/:tripId/interest_points/:pointId
-/// Update an existing interest point
 router.patch("/:tripId/interest_points/:pointId", authMiddleware, async (req, res) => {
     try {
         const user = (req as any).user;
@@ -209,9 +210,14 @@ router.patch("/:tripId/interest_points/:pointId", authMiddleware, async (req, re
 
         await pointRef.update(updates);
 
+        const updatedDoc = await pointRef.get();
+        const updatedData = updatedDoc.data();
+
         return res.status(200).json({
             id: pointId,
-            ...req.body,
+            ...updatedData,
+            date: updatedData?.date?.toDate().toISOString(),
+            coordinates: normalizeCoordinates(updatedData?.coordinates),
         });
     } catch (err) {
         console.error("Error updating interest point:", err);
@@ -219,9 +225,7 @@ router.patch("/:tripId/interest_points/:pointId", authMiddleware, async (req, re
     }
 });
 
-
 /// DELETE /trips/:tripId/interest_points/:pointId
-/// Delete an interest point from a trip
 router.delete("/:tripId/interest_points/:pointId", authMiddleware, async (req, res) => {
     try {
         const user = (req as any).user;
