@@ -1,74 +1,77 @@
 import "package:flutter/material.dart";
 
+import "package:flutter/material.dart";
+
+/// Light mode color scheme
 const ColorScheme _lightColorScheme = ColorScheme(
   brightness: Brightness.light,
 
-  primary: Color(0xFF6750A4),
+  primary: Color(0xFF4B5563), // Graphite gray
   onPrimary: Color(0xFFFFFFFF),
-  primaryContainer: Color(0xFFEADDFF),
-  onPrimaryContainer: Color(0xFF21005D),
+  primaryContainer: Color(0xFFD1D5DB), // Silver container
+  onPrimaryContainer: Color(0xFF111827),
 
-  secondary: Color(0xFF625B71),
+  secondary: Color(0xFF6B7280), // Neutral gray
   onSecondary: Color(0xFFFFFFFF),
-  secondaryContainer: Color(0xFFE8DEF8),
-  onSecondaryContainer: Color(0xFF1D192B),
+  secondaryContainer: Color(0xFFE5E7EB), // Light silver
+  onSecondaryContainer: Color(0xFF1F2937),
 
-  tertiary: Color(0xFF7D5260),
-  onTertiary: Color(0xFFFFFFFF),
-  tertiaryContainer: Color(0xFFFFD8E4),
-  onTertiaryContainer: Color(0xFF31111D),
+  tertiary: Color(0xFF9CA3AF), // Soft silver accent
+  onTertiary: Color(0xFF111827),
+  tertiaryContainer: Color(0xFFF3F4F6), // Very light gray
+  onTertiaryContainer: Color(0xFF1F2937),
 
-  error: Color(0xFFB3261E),
+  error: Color(0xFFB91C1C),
   onError: Color(0xFFFFFFFF),
-  errorContainer: Color(0xFFF9DEDC),
-  onErrorContainer: Color(0xFF410E0B),
+  errorContainer: Color(0xFFFECACA),
+  onErrorContainer: Color(0xFF450A0A),
 
-  surface: Color(0xFFFFFBFE),
-  onSurface: Color(0xFF1C1B1F),
-  surfaceContainerHighest: Color(0xFFE6E1E5),
-  onSurfaceVariant: Color(0xFF49454F),
+  surface: Color(0xFFFFFFFF), // White
+  onSurface: Color(0xFF111827),
+  surfaceContainerHighest: Color(0xFFF3F4F6),
+  onSurfaceVariant: Color(0xFF4B5563),
 
-  outline: Color(0xFF79747E),
+  outline: Color(0xFF9CA3AF),
   shadow: Color(0xFF000000),
-  inverseSurface: Color(0xFF313033),
-  onInverseSurface: Color(0xFFF4EFF4),
-  inversePrimary: Color(0xFFD0BCFF),
+  inverseSurface: Color(0xFF1F2937),
+  onInverseSurface: Color(0xFFF9FAFB),
+  inversePrimary: Color(0xFFCBD5E1), // Light steel gray
 );
 
 /// Dark mode color scheme
 const ColorScheme _darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
 
-  primary: Color(0xFFD0BCFF),
-  onPrimary: Color(0xFF381E72),
-  primaryContainer: Color(0xFF4F378B),
-  onPrimaryContainer: Color(0xFFEADDFF),
+  primary: Color(0xFF9CA3AF), // Silver-gray
+  onPrimary: Color(0xFF1F2937),
+  primaryContainer: Color(0xFF4B5563), // Graphite
+  onPrimaryContainer: Color(0xFFD1D5DB),
 
-  secondary: Color(0xFFCCC2DC),
-  onSecondary: Color(0xFF332D41),
-  secondaryContainer: Color(0xFF4A4458),
-  onSecondaryContainer: Color(0xFFE8DEF8),
+  secondary: Color(0xFF6B7280), // Neutral mid-gray
+  onSecondary: Color(0xFFE5E7EB),
+  secondaryContainer: Color(0xFF374151),
+  onSecondaryContainer: Color(0xFFE5E7EB),
 
-  tertiary: Color(0xFFEFB8C8),
-  onTertiary: Color(0xFF492532),
-  tertiaryContainer: Color(0xFF633B48),
-  onTertiaryContainer: Color(0xFFFFD8E4),
+  tertiary: Color(0xFFCBD5E1), // Light silver
+  onTertiary: Color(0xFF1F2937),
+  tertiaryContainer: Color(0xFF475569), // Slate
+  onTertiaryContainer: Color(0xFFE2E8F0),
 
-  error: Color(0xFFF2B8B5),
-  onError: Color(0xFF601410),
-  errorContainer: Color(0xFF8C1D18),
-  onErrorContainer: Color(0xFFF9DEDC),
+  error: Color(0xFFFCA5A5),
+  onError: Color(0xFF450A0A),
+  errorContainer: Color(0xFF7F1D1D),
+  onErrorContainer: Color(0xFFFECACA),
 
-  surface: Color(0xFF1C1B1F),
-  onSurface: Color(0xFFE6E1E5),
-  surfaceContainerHighest: Color(0xFF332D41),
-  onSurfaceVariant: Color(0xFFCAC4D0),
+  surface: Color(0xFF111827), // Dark graphite
+  onSurface: Color(0xFFE5E7EB),
+  surfaceContainerHighest: Color(0xFF1F2937),
+  onSurfaceVariant: Color(0xFF9CA3AF),
 
-  outline: Color(0xFF938F99),
+  outline: Color(0xFF6B7280),
   shadow: Color(0xFF000000),
-  inverseSurface: Color(0xFFE6E1E5),
-  onInverseSurface: Color(0xFF313033),
-  inversePrimary: Color(0xFF6750A4),
+  inverseSurface: Color(0xFFE5E7EB),
+  onInverseSurface: Color(0xFF1F2937),
+  inversePrimary: Color(0xFF4B5563),
 );
 
 ThemeData get light {
@@ -85,7 +88,7 @@ ThemeData get light {
       filled: true,
       fillColor: _lightColorScheme.surface,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20), // squircle-like curve
+        borderRadius: BorderRadius.circular(20),
         borderSide: BorderSide(color: _lightColorScheme.outline, width: 1.5),
       ),
       enabledBorder: OutlineInputBorder(

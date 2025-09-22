@@ -39,20 +39,27 @@ class TripCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lightMode = Theme.of(context).brightness == Brightness.light;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           color: context.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 20,
-              spreadRadius: 2,
-              offset: const Offset(0, 8),
-            ),
-          ],
+          border: !lightMode
+              ? Border.all(color: context.colorScheme.outline, width: 1)
+              : null,
+          boxShadow: lightMode
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 8),
+                  ),
+                ]
+              : null,
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),

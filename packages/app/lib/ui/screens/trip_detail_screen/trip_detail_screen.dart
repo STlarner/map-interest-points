@@ -112,35 +112,36 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 32)),
-              SliverPadding(
-                padding: const EdgeInsets.only(
-                  left: 24.0,
-                  right: 24.0,
-                  bottom: 20,
-                ),
-                sliver: SliverToBoxAdapter(
-                  child: Row(
-                    children: [
-                      Text(
-                        "${tripNotifier.trip.interestPoints.length} Points of interest",
-                        style: context.textTheme.titleLarge,
-                      ),
-                      const Spacer(),
-                      ValueListenableBuilder<bool>(
-                        valueListenable: _isEditModeEnabled,
-                        builder: (context, bool value, child) {
-                          return TextButton.icon(
-                            onPressed: () => _isEditModeEnabled.value =
-                                !_isEditModeEnabled.value,
-                            label: Text(value ? "Stop Editing" : "Edit"),
-                            icon: const Icon(Icons.edit),
-                          );
-                        },
-                      ),
-                    ],
+              if (tripNotifier.interestPointsStatus == AsyncStatus.success)
+                SliverPadding(
+                  padding: const EdgeInsets.only(
+                    left: 24.0,
+                    right: 24.0,
+                    bottom: 20,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: Row(
+                      children: [
+                        Text(
+                          "${tripNotifier.trip.interestPoints.length} Points of interest",
+                          style: context.textTheme.titleLarge,
+                        ),
+                        const Spacer(),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _isEditModeEnabled,
+                          builder: (context, bool value, child) {
+                            return TextButton.icon(
+                              onPressed: () => _isEditModeEnabled.value =
+                                  !_isEditModeEnabled.value,
+                              label: Text(value ? "Stop Editing" : "Edit"),
+                              icon: const Icon(Icons.edit),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
               if (tripNotifier.interestPointsStatus == AsyncStatus.loading)
                 SliverPadding(
@@ -232,11 +233,13 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
               if (tripNotifier.interestPointsStatus == AsyncStatus.error)
                 SliverToBoxAdapter(
                   child: MaterialBanner(
-                    backgroundColor: Colors.red.shade100,
+                    backgroundColor: context.colorScheme.errorContainer,
                     elevation: 2,
                     content: Text(
                       "Oops! We couldn’t load your trip plan right now. Please try again later.",
-                      style: TextStyle(color: Colors.red.shade900),
+                      style: TextStyle(
+                        color: context.colorScheme.onErrorContainer,
+                      ),
                     ),
                     actions: [
                       TextButton(

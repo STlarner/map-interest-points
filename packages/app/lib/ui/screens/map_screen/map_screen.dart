@@ -159,9 +159,7 @@ class _MapScreenState extends State<MapScreen> {
                         child:
                             Icon(
                                   Icons.location_pin,
-                                  color: isSelected
-                                      ? context.colorScheme.secondary
-                                      : context.colorScheme.primary,
+                                  color: context.colorScheme.primary,
                                   size: 40,
                                 )
                                 .animate(target: isSelected ? 1 : 0)
