@@ -9,6 +9,7 @@ import "package:url_launcher/url_launcher.dart";
 import "../../../models/interest_point_model.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 import "../../../router/app_routes.dart";
+import "../../../theme/colors_extension.dart";
 import "../../extensions/input_decoration_extension.dart";
 import "../../widgets/appbar_circle_button.dart";
 import "../interest_point_bottom_sheet/interest_point_bottom_sheet.dart";
@@ -152,7 +153,10 @@ class _MapScreenState extends State<MapScreen> {
                         child:
                             Icon(
                                   Icons.location_pin,
-                                  color: context.colorScheme.primary,
+                                  color: context
+                                      .theme
+                                      .additionalColors
+                                      .mapMarkerColor,
                                   size: 40,
                                 )
                                 .animate(target: isSelected ? 1 : 0)

@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "colors_extension.dart";
+
 /// Light mode color scheme
 const ColorScheme _lightColorScheme = ColorScheme(
   brightness: Brightness.light,
@@ -75,6 +77,7 @@ const ColorScheme _darkColorScheme = ColorScheme(
 ThemeData get light {
   return ThemeData(
     useMaterial3: true,
+    extensions: const [ColorsExtension(mapMarkerColor: Colors.red)],
     colorScheme: _lightColorScheme,
     appBarTheme: AppBarTheme(
       backgroundColor: _lightColorScheme.primaryContainer,
@@ -119,6 +122,7 @@ ThemeData get light {
 ThemeData get dark {
   return ThemeData(
     useMaterial3: true,
+    extensions: const [ColorsExtension(mapMarkerColor: Colors.red)],
     colorScheme: _darkColorScheme,
     appBarTheme: AppBarTheme(
       backgroundColor: _darkColorScheme.primaryContainer,
