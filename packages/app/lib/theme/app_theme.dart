@@ -1,7 +1,5 @@
 import "package:flutter/material.dart";
 
-import "package:flutter/material.dart";
-
 /// Light mode color scheme
 const ColorScheme _lightColorScheme = ColorScheme(
   brightness: Brightness.light,

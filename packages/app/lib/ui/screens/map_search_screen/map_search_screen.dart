@@ -7,6 +7,7 @@ import "package:ui/extensions/context_extensions/context_color_scheme_extension.
 import "../../../notifiers/async_state.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 import "../../extensions/input_decoration_extension.dart";
+import "../../widgets/appbar_circle_button.dart";
 
 class MapSearchScreen extends StatefulWidget {
   const MapSearchScreen({super.key});
@@ -75,20 +76,11 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
                 ),
               ).withoutBorder(fillColor: context.colorScheme.tertiaryContainer),
             ),
-            leading: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Material(
-                color: context.colorScheme.tertiaryContainer,
-                shape: const CircleBorder(),
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: () => context.pop(),
-                  child: Icon(
-                    Icons.close,
-                    color: context.colorScheme.onTertiaryContainer,
-                  ),
-                ),
-              ),
+            leading: AppBarCircleButton(
+              icon: Icons.close,
+              foregroundColor: context.colorScheme.onTertiaryContainer,
+              backgroundColor: context.colorScheme.tertiaryContainer,
+              onTap: () => context.pop(),
             ),
           ),
           body: tripNotifier.mapSearchStatus == AsyncStatus.loading

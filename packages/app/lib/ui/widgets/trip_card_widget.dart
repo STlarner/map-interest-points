@@ -4,6 +4,7 @@ import "package:ui/ui.dart";
 
 import "../../models/trip_model.dart";
 import "firebase_async_image.dart";
+import "shadowed_container.dart";
 
 class TripCardWidget extends StatelessWidget {
   const TripCardWidget({
@@ -39,28 +40,9 @@ class TripCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lightMode = Theme.of(context).brightness == Brightness.light;
-
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: !lightMode
-              ? Border.all(color: context.colorScheme.outline, width: 1)
-              : null,
-          boxShadow: lightMode
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 8),
-                  ),
-                ]
-              : null,
-        ),
+      child: ShadowedContainer(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(

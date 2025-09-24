@@ -121,20 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   }
                                 })
                                 .catchError((dynamic error) {
-                                  if (!context.mounted) {
-                                    return;
+                                  if (context.mounted) {
+                                    context.showErrorBanner(
+                                      "Login failed - $error",
+                                    );
                                   }
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("Login failed - $error"),
-                                      action: SnackBarAction(
-                                        label: "Close",
-                                        onPressed: () {
-                                          // Undo logic here
-                                        },
-                                      ),
-                                    ),
-                                  );
                                 });
                           },
                           child: const Text("Login"),

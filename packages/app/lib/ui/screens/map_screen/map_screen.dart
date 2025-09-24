@@ -10,6 +10,7 @@ import "../../../models/interest_point_model.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 import "../../../router/app_routes.dart";
 import "../../extensions/input_decoration_extension.dart";
+import "../../widgets/appbar_circle_button.dart";
 import "../interest_point_bottom_sheet/interest_point_bottom_sheet.dart";
 
 class MapScreen extends StatefulWidget {
@@ -58,17 +59,9 @@ class _MapScreenState extends State<MapScreen> {
           statusBarBrightness: Brightness.light,
         ),
         automaticallyImplyLeading: false,
-        leading: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Material(
-            color: context.colorScheme.surface,
-            shape: const CircleBorder(),
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () => context.pop(),
-              child: Icon(Icons.close, color: context.colorScheme.onSurface),
-            ),
-          ),
+        leading: AppBarCircleButton(
+          icon: Icons.close,
+          onTap: () => context.pop(),
         ),
         title: GestureDetector(
           onTap: () =>

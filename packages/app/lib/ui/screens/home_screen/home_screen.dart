@@ -7,6 +7,7 @@ import "../../../dependency_injection/session_manager.dart";
 import "../../../notifiers/async_state.dart";
 import "../../../notifiers/trips_notifier.dart";
 import "../../../router/app_routes.dart";
+import "../../widgets/appbar_circle_button.dart";
 import "../../widgets/trip_card_widget.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -33,12 +34,20 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             title: const Text("Home"),
             actions: [
-              IconButton(
-                onPressed: () {
-                  GetIt.I<SessionManager>().logout();
-                  context.goNamed(AppRoute.login.name);
-                },
-                icon: const Icon(Icons.person),
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: AppBarCircleButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icons.logout,
+                    onTap: () {
+                      GetIt.I<SessionManager>().logout();
+                      context.goNamed(AppRoute.login.name);
+                    },
+                  ),
+                ),
               ),
             ],
           ),

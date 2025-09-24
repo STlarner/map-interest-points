@@ -9,6 +9,7 @@ import "../../../notifiers/progress_indicator_notifier.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 import "../../../router/app_routes.dart";
 import "../../extensions/ui_context_extension.dart";
+import "../../widgets/appbar_circle_button.dart";
 import "../../widgets/firebase_async_image.dart";
 import "../../widgets/trip_day_card.dart";
 
@@ -49,10 +50,10 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
           body: CustomScrollView(
             slivers: [
               SliverAppBar(
-                leading: BackButton(
-                  onPressed: () {
-                    context.pop();
-                  },
+                leading: AppBarCircleButton(
+                  icon: Icons.chevron_left,
+                  padding: const EdgeInsets.only(left: 16),
+                  onTap: () => context.pop(),
                 ),
                 pinned: true,
                 expandedHeight: 250,
