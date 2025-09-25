@@ -8,6 +8,7 @@ import "../../../notifiers/async_state.dart";
 import "../../../notifiers/progress_indicator_notifier.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 import "../../../router/app_routes.dart";
+import "../../../theme/colors_extension.dart";
 import "../../extensions/ui_context_extension.dart";
 import "../../widgets/appbar_circle_button.dart";
 import "../../widgets/firebase_async_image.dart";
@@ -156,8 +157,12 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                         const Padding(padding: EdgeInsets.only(bottom: 24)),
                     itemBuilder: (context, index) {
                       return Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
+                        baseColor:
+                            context.theme.additionalColors.shimmerBaseColor,
+                        highlightColor: context
+                            .theme
+                            .additionalColors
+                            .shimmerHighlightColor,
                         period: const Duration(milliseconds: 1000),
                         child: Container(
                           decoration: BoxDecoration(

@@ -77,7 +77,13 @@ const ColorScheme _darkColorScheme = ColorScheme(
 ThemeData get light {
   return ThemeData(
     useMaterial3: true,
-    extensions: const [ColorsExtension(mapMarkerColor: Colors.red)],
+    extensions: [
+      ColorsExtension(
+        mapMarkerColor: Colors.red,
+        shimmerBaseColor: Colors.grey.shade300,
+        shimmerHighlightColor: Colors.grey.shade100,
+      ),
+    ],
     colorScheme: _lightColorScheme,
     appBarTheme: AppBarTheme(
       backgroundColor: _lightColorScheme.primaryContainer,
@@ -122,7 +128,13 @@ ThemeData get light {
 ThemeData get dark {
   return ThemeData(
     useMaterial3: true,
-    extensions: const [ColorsExtension(mapMarkerColor: Colors.red)],
+    extensions: [
+      ColorsExtension(
+        mapMarkerColor: Colors.red,
+        shimmerBaseColor: Colors.grey.shade800,
+        shimmerHighlightColor: Colors.grey.shade600,
+      ),
+    ],
     colorScheme: _darkColorScheme,
     appBarTheme: AppBarTheme(
       backgroundColor: _darkColorScheme.primaryContainer,

@@ -6,6 +6,7 @@ import "package:flutter/material.dart";
 import "package:ui/ui.dart";
 
 import "../../dependency_injection/firestore_manager.dart";
+import "../../theme/colors_extension.dart";
 
 class FirebaseAsyncImage extends StatefulWidget {
   const FirebaseAsyncImage({
@@ -74,8 +75,9 @@ class _FirebaseAsyncImageState extends State<FirebaseAsyncImage> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
+            baseColor: context.theme.additionalColors.shimmerBaseColor,
+            highlightColor:
+                context.theme.additionalColors.shimmerHighlightColor,
             period: const Duration(milliseconds: 1000),
             child: Container(
               width: widget.width,

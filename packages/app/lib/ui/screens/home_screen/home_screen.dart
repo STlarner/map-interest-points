@@ -7,6 +7,7 @@ import "../../../dependency_injection/session_manager.dart";
 import "../../../notifiers/async_state.dart";
 import "../../../notifiers/trips_notifier.dart";
 import "../../../router/app_routes.dart";
+import "../../../theme/colors_extension.dart";
 import "../../widgets/appbar_circle_button.dart";
 import "../../widgets/trip_card_widget.dart";
 
@@ -86,8 +87,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           const Padding(padding: EdgeInsets.only(bottom: 24)),
                       itemBuilder: (context, index) {
                         return Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.grey.shade100,
+                          baseColor:
+                              context.theme.additionalColors.shimmerBaseColor,
+                          highlightColor: context
+                              .theme
+                              .additionalColors
+                              .shimmerHighlightColor,
                           period: const Duration(milliseconds: 1000),
                           child: Container(
                             decoration: BoxDecoration(

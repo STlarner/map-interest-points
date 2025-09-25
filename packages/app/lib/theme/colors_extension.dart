@@ -1,14 +1,27 @@
 import "package:flutter/material.dart";
 
 class ColorsExtension extends ThemeExtension<ColorsExtension> {
-  const ColorsExtension({required this.mapMarkerColor});
+  const ColorsExtension({
+    required this.mapMarkerColor,
+    required this.shimmerBaseColor,
+    required this.shimmerHighlightColor,
+  });
 
-  final Color? mapMarkerColor;
+  final Color mapMarkerColor;
+  final Color shimmerBaseColor;
+  final Color shimmerHighlightColor;
 
   @override
-  ColorsExtension copyWith({Color? mapMarkerColor}) {
+  ColorsExtension copyWith({
+    Color? mapMarkerColor,
+    Color? shimmerBaseColor,
+    Color? shimmerHighlightColor,
+  }) {
     return ColorsExtension(
       mapMarkerColor: mapMarkerColor ?? this.mapMarkerColor,
+      shimmerBaseColor: shimmerBaseColor ?? this.shimmerBaseColor,
+      shimmerHighlightColor:
+          shimmerHighlightColor ?? this.shimmerHighlightColor,
     );
   }
 
@@ -18,7 +31,17 @@ class ColorsExtension extends ThemeExtension<ColorsExtension> {
       return this;
     }
     return ColorsExtension(
-      mapMarkerColor: Color.lerp(mapMarkerColor, other.mapMarkerColor, t),
+      mapMarkerColor: Color.lerp(mapMarkerColor, other.mapMarkerColor, t)!,
+      shimmerBaseColor: Color.lerp(
+        shimmerBaseColor,
+        other.shimmerBaseColor,
+        t,
+      )!,
+      shimmerHighlightColor: Color.lerp(
+        shimmerHighlightColor,
+        other.shimmerHighlightColor,
+        t,
+      )!,
     );
   }
 }
