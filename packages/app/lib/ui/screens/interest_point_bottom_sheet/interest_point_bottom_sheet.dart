@@ -23,6 +23,7 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final ValueNotifier<bool> editModeNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -40,6 +41,10 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isCreatingNewInterestPoint =
+        context.read<TripDetailNotifier>().draftInterestPoint ==
+        widget.interestPoint;
+
     return Container(
       decoration: BoxDecoration(
         color: context.colorScheme.surface,
@@ -52,135 +57,192 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
           right: 24,
           top: 16,
         ),
-        child: Column(
-          spacing: 16,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colorScheme.onSurface,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                spacing: 16,
-                children: [
-                  TextFormField(
-                    controller: _titleController,
-                    autocorrect: false,
-                    textCapitalization: TextCapitalization.none,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) => (value == null || value.isEmpty)
-                        ? "Enter a valid title"
-                        : null,
-                    decoration: const InputDecoration(
-                      labelText: "Title",
-                      hintText: "Enter the trip title",
-                      border: OutlineInputBorder(),
-                    ),
+        child: ValueListenableBuilder<bool>(
+          valueListenable: editModeNotifier,
+          builder: (context, isEditModeEnabled, child) {
+            return Column(
+              spacing: 16,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: context.colorScheme.onSurface,
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  TextFormField(
-                    controller: _descriptionController,
-                    maxLines: 3,
-                    minLines: 1,
-                    autocorrect: false,
-                    textCapitalization: TextCapitalization.none,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) => (value == null || value.isEmpty)
-                        ? "Enter a valid description"
-                        : null,
-                    decoration: const InputDecoration(
-                      labelText: "Description",
-                      hintText: "Enter the trip description",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    spacing: 16,
+                ),
+                if (!isCreatingNewInterestPoint && !isEditModeEnabled)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          child: const Text("Cancel"),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(widget.interestPoint.title),
+                        subtitle: Text(widget.interestPoint.description),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.edit),
                           onPressed: () {
-                            context.pop();
+                            editModeNotifier.value = !isEditModeEnabled;
                           },
                         ),
                       ),
-                      Expanded(
-                        child: FilledButton(
-                          child: const Text("Save"),
-                          onPressed: () {
-                            final notifier = context.read<TripDetailNotifier>();
-                            if (_formKey.currentState?.validate() == false) {
-                              return;
-                            }
-
-                            /// in this case we are creating a new interest point
-                            if (notifier.draftInterestPoint ==
-                                widget.interestPoint) {
-                              GetIt.I<LogProvider>().log(
-                                "Creating a new interest point from draft",
-                                Severity.debug,
-                              );
-
-                              widget.interestPoint.title =
-                                  _titleController.text;
-                              widget.interestPoint.description =
-                                  _descriptionController.text;
-
-                              context.read<ProgressIndicatorNotifier>().show();
-                              GetIt.I<AppRepository>()
-                                  .addInterestPoint(
-                                    notifier.trip,
-                                    widget.interestPoint,
-                                  )
-                                  .whenComplete(() {
-                                    if (context.mounted) {
-                                      context
-                                          .read<ProgressIndicatorNotifier>()
-                                          .hide();
-                                    }
-                                  })
-                                  .then((point) {
-                                    notifier
-                                        .promoteDraftInterestPointToExisting(
-                                          point.id,
-                                        );
-                                    if (context.mounted) {
-                                      context.pop();
-                                    }
-                                  })
-                                  .catchError((dynamic error) {
-                                    if (context.mounted) {
-                                      context.showErrorBanner(error.toString());
-                                    }
-                                  });
-                              return;
-                            }
-
-                            /// else we are updating an existing one
-                            GetIt.I<LogProvider>().log(
-                              "Updating an existing interest point",
-                              Severity.debug,
-                            );
-
-                            // TODO(Lo): gestire l'aggiornamento di un interest point esistente
-
-                            context.pop();
-                          },
-                        ),
+                      Row(
+                        spacing: 4,
+                        children: [
+                          const Icon(Icons.calendar_month, size: 20),
+                          Text(widget.interestPoint.date.eEEEdMMMMy),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ],
+                if (isCreatingNewInterestPoint || isEditModeEnabled)
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      spacing: 16,
+                      children: [
+                        TextFormField(
+                          controller: _titleController,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? "Enter a valid title"
+                              : null,
+                          decoration: const InputDecoration(
+                            labelText: "Title",
+                            hintText: "Enter the trip title",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        TextFormField(
+                          controller: _descriptionController,
+                          maxLines: 3,
+                          minLines: 1,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? "Enter a valid description"
+                              : null,
+                          decoration: const InputDecoration(
+                            labelText: "Description",
+                            hintText: "Enter the trip description",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          spacing: 16,
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                child: const Text("Cancel"),
+                                onPressed: () {
+                                  /// if edit mode is enabled exit it
+                                  if (isEditModeEnabled) {
+                                    editModeNotifier.value = false;
+                                    return;
+                                  }
+
+                                  /// if in creation mode, pop the screen
+                                  context.pop();
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              child: FilledButton(
+                                child: const Text("Save"),
+                                onPressed: () {
+                                  final notifier = context
+                                      .read<TripDetailNotifier>();
+                                  if (_formKey.currentState?.validate() ==
+                                      false) {
+                                    return;
+                                  }
+
+                                  widget.interestPoint.title =
+                                      _titleController.text;
+                                  widget.interestPoint.description =
+                                      _descriptionController.text;
+
+                                  /// in this case we are creating a new interest point
+                                  if (notifier.draftInterestPoint ==
+                                      widget.interestPoint) {
+                                    context
+                                        .read<ProgressIndicatorNotifier>()
+                                        .show();
+                                    GetIt.I<AppRepository>()
+                                        .addInterestPoint(
+                                          notifier.trip,
+                                          widget.interestPoint,
+                                        )
+                                        .whenComplete(() {
+                                          if (context.mounted) {
+                                            context
+                                                .read<
+                                                  ProgressIndicatorNotifier
+                                                >()
+                                                .hide();
+                                          }
+                                        })
+                                        .then((point) {
+                                          notifier
+                                              .promoteDraftInterestPointToExisting(
+                                                point.id,
+                                              );
+                                          if (context.mounted) {
+                                            context.pop();
+                                          }
+                                        })
+                                        .catchError((dynamic error) {
+                                          if (context.mounted) {
+                                            context.showErrorBanner(
+                                              error.toString(),
+                                            );
+                                          }
+                                        });
+                                    return;
+                                  }
+
+                                  /// else we are updating an existing one
+                                  context
+                                      .read<ProgressIndicatorNotifier>()
+                                      .show();
+                                  GetIt.I<AppRepository>()
+                                      .updateInterestPoint(
+                                        notifier.trip,
+                                        widget.interestPoint,
+                                      )
+                                      .then((_) {
+                                        editModeNotifier.value = false;
+                                      })
+                                      .whenComplete(() {
+                                        if (context.mounted) {
+                                          context
+                                              .read<ProgressIndicatorNotifier>()
+                                              .hide();
+                                        }
+                                      })
+                                      .catchError((dynamic error) {
+                                        if (context.mounted) {
+                                          context.showErrorBanner(
+                                            error.toString(),
+                                          );
+                                        }
+                                      });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );
