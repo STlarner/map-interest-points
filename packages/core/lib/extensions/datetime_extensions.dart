@@ -1,9 +1,9 @@
 import "package:intl/intl.dart";
 
-extension DateFormatting on DateTime {
-  String get ddMMM => format("dd MMM");
-  String get eEEEMMMd => format("EEEE, MMM d");
-  String get eEEEdMMMMy => format("EEEE, d MMMM y");
+extension DateTimeUtils on DateTime {
+  String get ddMMM => DateFormatUtils.ddMMM.format(this);
+  String get eEEEMMMd => DateFormatUtils.eEEEMMMd.format(this);
+  String get eEEEdMMMMy => DateFormatUtils.eEEEdMMMMy.format(this);
 
   static DateTime? fromIsoString(String isoString) {
     try {
@@ -12,8 +12,16 @@ extension DateFormatting on DateTime {
       return null;
     }
   }
+}
 
-  String format(String pattern) {
-    return DateFormat(pattern).format(this);
+extension DateFormatUtils on DateFormat {
+  static DateFormat get ddMMM => DateFormat("dd MMM");
+  static DateFormat get eEEEMMMd => DateFormat("EEEE, MMM d");
+  static DateFormat get eEEEdMMMMy => DateFormat("EEEE, d MMMM y");
+}
+
+extension DateStringUtils on String {
+  DateTime toDateTime(DateFormat dateFormat) {
+    return dateFormat.parse(this);
   }
 }

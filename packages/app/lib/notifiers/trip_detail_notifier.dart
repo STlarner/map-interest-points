@@ -58,6 +58,7 @@ class TripDetailNotifier extends ChangeNotifier {
 
   /// groups interest points by day
   void mapInterestPointsByDay() {
+    //FIXME(Lo): i giorni sono sequenziali anche quando c'è un buco tra due date
     interestPointsByDay = trip.interestPoints
         .fold<Map<DateTime, List<InterestPointModel>>>({}, (
           result,
@@ -72,6 +73,11 @@ class TripDetailNotifier extends ChangeNotifier {
           result.putIfAbsent(date, () => []).add(interestPoint);
           return result;
         });
+  }
+
+  void updateInterestPoints() {
+    mapInterestPointsByDay();
+    notifyListeners();
   }
 
   void deleteInterestPoint(InterestPointModel interestPoint) {

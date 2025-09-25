@@ -19,8 +19,8 @@ class TripModel {
       title: json["title"] as String,
       description: json["description"] as String,
       imagePath: json["image_path"] as String?,
-      startDate: DateFormatting.fromIsoString(json["start_date"] as String)!,
-      endDate: DateFormatting.fromIsoString(json["end_date"] as String)!,
+      startDate: DateTimeUtils.fromIsoString(json["start_date"] as String)!,
+      endDate: DateTimeUtils.fromIsoString(json["end_date"] as String)!,
     );
   }
 

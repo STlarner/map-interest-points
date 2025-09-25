@@ -62,7 +62,10 @@ class _MapScreenState extends State<MapScreen> {
         automaticallyImplyLeading: false,
         leading: AppBarCircleButton(
           icon: Icons.close,
-          onTap: () => context.pop(),
+          onTap: () {
+            context.read<TripDetailNotifier>().clearMapSearch();
+            context.pop();
+          },
         ),
         title: GestureDetector(
           onTap: () =>
@@ -201,6 +204,7 @@ class _MapScreenState extends State<MapScreen> {
     showModalBottomSheet<InterestPointBottomSheet>(
       isDismissible: true,
       useSafeArea: true,
+      isScrollControlled: true,
       context: context,
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withValues(alpha: 0.2),

@@ -22,6 +22,8 @@ class InterestPointBottomSheet extends StatefulWidget {
 class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _dateController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> editModeNotifier = ValueNotifier<bool>(false);
 
@@ -29,6 +31,7 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
   void initState() {
     _titleController.text = widget.interestPoint.title;
     _descriptionController.text = widget.interestPoint.description;
+    _dateController.text = widget.interestPoint.date.eEEEdMMMMy;
     super.initState();
   }
 
@@ -52,7 +55,7 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
       ),
       child: Padding(
         padding: const EdgeInsets.only(
-          bottom: 24,
+          bottom: 40,
           left: 24,
           right: 24,
           top: 16,
@@ -105,6 +108,7 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                         TextFormField(
                           controller: _titleController,
                           autocorrect: false,
+                          autofocus: true,
                           textCapitalization: TextCapitalization.none,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => (value == null || value.isEmpty)
@@ -112,7 +116,7 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                               : null,
                           decoration: const InputDecoration(
                             labelText: "Title",
-                            hintText: "Enter the trip title",
+                            hintText: "Enter the point of interest title",
                             border: OutlineInputBorder(),
                           ),
                         ),
@@ -128,7 +132,26 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                               : null,
                           decoration: const InputDecoration(
                             labelText: "Description",
-                            hintText: "Enter the trip description",
+                            hintText: "Enter the point of interest description",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        TextFormField(
+                          controller: _dateController,
+                          maxLines: 3,
+                          minLines: 1,
+                          autocorrect: false,
+                          readOnly: true,
+                          canRequestFocus: false,
+                          textCapitalization: TextCapitalization.none,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? "Enter a valid date"
+                              : null,
+                          onTap: () => _showDatePicker(context),
+                          decoration: const InputDecoration(
+                            labelText: "Date",
+                            hintText: "Enter the interest point date",
                             border: OutlineInputBorder(),
                           ),
                         ),
@@ -166,6 +189,9 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                                       _titleController.text;
                                   widget.interestPoint.description =
                                       _descriptionController.text;
+                                  widget.interestPoint.date = _dateController
+                                      .text
+                                      .toDateTime(DateFormatUtils.eEEEdMMMMy);
 
                                   /// in this case we are creating a new interest point
                                   if (notifier.draftInterestPoint ==
@@ -217,6 +243,7 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                                       )
                                       .then((_) {
                                         editModeNotifier.value = false;
+                                        notifier.updateInterestPoints();
                                       })
                                       .whenComplete(() {
                                         if (context.mounted) {
@@ -246,5 +273,23 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
         ),
       ),
     );
+  }
+
+  Future<void> _showDatePicker(BuildContext context) async {
+    FocusScope.of(context).requestFocus(FocusNode());
+
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null) {
+      final String formattedDate = pickedDate.eEEEdMMMMy;
+      setState(() {
+        _dateController.text = formattedDate;
+      });
+    }
   }
 }
