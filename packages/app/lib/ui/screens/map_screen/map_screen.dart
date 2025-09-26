@@ -120,7 +120,7 @@ class _MapScreenState extends State<MapScreen> {
                   id: "draft",
                   title: "",
                   description: "",
-                  date: DateTime.now(),
+                  date: tripNotifier.trip.startDate,
                   coordinates: Coordinates(
                     latitude: point.latitude,
                     longitude: point.longitude,

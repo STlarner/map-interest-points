@@ -156,7 +156,7 @@ class TripDetailNotifier extends ChangeNotifier {
       id: "draft",
       title: model.name!,
       description: model.address!.formattedAddress,
-      date: DateTime.now(),
+      date: trip.startDate,
       coordinates: Coordinates(latitude: model.lat, longitude: model.lon),
     );
   }

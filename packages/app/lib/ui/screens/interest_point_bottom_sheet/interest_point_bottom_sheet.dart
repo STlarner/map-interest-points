@@ -7,6 +7,7 @@ import "../../../dependency_injection/app_repository.dart";
 import "../../../models/interest_point_model.dart";
 import "../../../notifiers/progress_indicator_notifier.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
+import "../../../notifiers/trips_notifier.dart";
 import "../../extensions/ui_context_extension.dart";
 
 class InterestPointBottomSheet extends StatefulWidget {
@@ -277,12 +278,20 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
 
   Future<void> _showDatePicker(BuildContext context) async {
     FocusScope.of(context).requestFocus(FocusNode());
+    final tripNotifier = context.read<TripDetailNotifier>();
+    DateTime? initialDate;
+
+    try {
+      initialDate = _dateController.text.toDateTime(DateFormatUtils.eEEEdMMMMy);
+    } catch (_) {
+      initialDate = tripNotifier.trip.startDate;
+    }
 
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      initialDate: initialDate,
+      firstDate: tripNotifier.trip.startDate,
+      lastDate: tripNotifier.trip.endDate,
     );
 
     if (pickedDate != null) {
