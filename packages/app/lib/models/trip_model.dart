@@ -14,13 +14,15 @@ class TripModel {
   });
 
   factory TripModel.fromJson({required Map<String, dynamic> json}) {
+    final start = DateTimeUtils.fromIsoString(json["start_date"] as String)!;
+    final end = DateTimeUtils.fromIsoString(json["end_date"] as String)!;
     return TripModel(
       id: json["id"] as String,
       title: json["title"] as String,
       description: json["description"] as String,
       imagePath: json["image_path"] as String?,
-      startDate: DateTimeUtils.fromIsoString(json["start_date"] as String)!,
-      endDate: DateTimeUtils.fromIsoString(json["end_date"] as String)!,
+      startDate: DateTime(start.year, start.month, start.day),
+      endDate: DateTime(end.year, end.month, end.day),
     );
   }
 
@@ -31,7 +33,7 @@ class TripModel {
   final DateTime startDate;
   final DateTime endDate;
 
-  String get days => (endDate.difference(startDate).inDays + 2).toString();
+  String get days => (endDate.difference(startDate).inDays + 1).toString();
 
   List<InterestPointModel> interestPoints = [];
 

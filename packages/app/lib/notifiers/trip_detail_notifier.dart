@@ -5,6 +5,7 @@ import "package:latlong2/latlong.dart";
 import "../dependency_injection/app_repository.dart";
 import "../models/interest_point_model.dart";
 import "../models/nominatim_osm_search_model.dart";
+import "../models/trip_day_model.dart";
 import "../models/trip_model.dart";
 import "async_state.dart";
 
@@ -26,7 +27,7 @@ class TripDetailNotifier extends ChangeNotifier {
   InterestPointModel? selectedInterestPoint;
 
   /// interest points grouped by day
-  Map<DateTime, List<InterestPointModel>> interestPointsByDay = {};
+  List<TripDayModel> tripDays = [];
 
   /// loading status of search API (OSM provider or similar)
   AsyncStatus mapSearchStatus = AsyncStatus.initial;
@@ -58,21 +59,26 @@ class TripDetailNotifier extends ChangeNotifier {
 
   /// groups interest points by day
   void mapInterestPointsByDay() {
-    //FIXME(Lo): i giorni sono sequenziali anche quando c'è un buco tra due date
-    interestPointsByDay = trip.interestPoints
-        .fold<Map<DateTime, List<InterestPointModel>>>({}, (
-          result,
-          interestPoint,
-        ) {
-          final date = DateTime(
-            interestPoint.date.year,
-            interestPoint.date.month,
-            interestPoint.date.day,
-          );
+    tripDays = trip.interestPoints.fold<List<TripDayModel>>([], (
+      result,
+      interestPoint,
+    ) {
+      TripDayModel? tripDay;
+      try {
+        tripDay = result.firstWhere((item) => item.date == interestPoint.date);
+        tripDay.interestPoints.add(interestPoint);
+        return result;
+      } catch (e) {
+        tripDay = TripDayModel(
+          day: interestPoint.date.difference(trip.startDate).inDays + 1,
+          date: interestPoint.date,
+          interestPoints: [interestPoint],
+        );
+        result.add(tripDay);
+      }
 
-          result.putIfAbsent(date, () => []).add(interestPoint);
-          return result;
-        });
+      return result;
+    })..sort((a, b) => a.day.compareTo(b.day));
   }
 
   void updateInterestPoints() {

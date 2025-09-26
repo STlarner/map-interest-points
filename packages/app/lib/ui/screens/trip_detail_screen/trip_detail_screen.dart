@@ -188,16 +188,15 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                     separatorBuilder: (context, index) =>
                         const Padding(padding: EdgeInsets.only(bottom: 24)),
                     itemBuilder: (context, index) {
-                      final entry = tripNotifier.interestPointsByDay.entries
-                          .elementAt(index);
+                      final tripDay = tripNotifier.tripDays[index];
                       return ValueListenableBuilder<bool>(
                         valueListenable: _isEditModeEnabled,
                         builder: (context, bool value, child) {
                           return TripDayCard(
                             showDeleteButton: value,
-                            interestPoints: entry.value,
-                            day: index + 1,
-                            date: entry.key,
+                            interestPoints: tripDay.interestPoints,
+                            day: tripDay.day,
+                            date: tripDay.date,
                             onTap: (id) {
                               tripNotifier.selectInterestPoint(
                                 tripNotifier.trip.interestPoints.firstWhere(
@@ -232,7 +231,7 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                         },
                       );
                     },
-                    itemCount: tripNotifier.interestPointsByDay.length,
+                    itemCount: tripNotifier.tripDays.length,
                   ),
                 ),
 
