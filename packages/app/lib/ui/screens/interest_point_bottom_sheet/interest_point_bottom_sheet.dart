@@ -109,7 +109,7 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                         TextFormField(
                           controller: _titleController,
                           autocorrect: false,
-                          autofocus: true,
+                          autofocus: isEditModeEnabled,
                           textCapitalization: TextCapitalization.none,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => (value == null || value.isEmpty)

@@ -13,6 +13,7 @@ import "../../../theme/colors_extension.dart";
 import "../../extensions/input_decoration_extension.dart";
 import "../../widgets/appbar_circle_button.dart";
 import "../interest_point_bottom_sheet/interest_point_bottom_sheet.dart";
+import "animated_map_controller.dart";
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -21,7 +22,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   final MapController _mapController = MapController();
   double currentZoom = 13;
@@ -128,6 +129,16 @@ class _MapScreenState extends State<MapScreen> {
                 );
 
                 tripNotifier.addDraftInterestPoint(interestPoint);
+
+                final animatedMapController = AnimatedMapController(
+                  mapController: _mapController,
+                  vsync: this,
+                );
+
+                animatedMapController.move(
+                  destination: interestPoint.coordinates.latLng,
+                  zoom: currentZoom,
+                );
                 showInterestPointBottomSheet(context, interestPoint);
               },
               onTap: (tapPosition, point) {
@@ -150,7 +161,18 @@ class _MapScreenState extends State<MapScreen> {
                     width: 80,
                     height: 80,
                     child: GestureDetector(
-                      onTap: () => showInterestPointBottomSheet(context, point),
+                      onTap: () {
+                        final animatedMapController = AnimatedMapController(
+                          mapController: _mapController,
+                          vsync: this,
+                        );
+
+                        animatedMapController.move(
+                          destination: point.coordinates.latLng,
+                          zoom: currentZoom,
+                        );
+                        showInterestPointBottomSheet(context, point);
+                      },
                       child: Align(
                         alignment: Alignment.topCenter,
                         child:

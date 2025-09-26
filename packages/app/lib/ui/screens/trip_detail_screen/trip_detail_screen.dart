@@ -43,7 +43,10 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
               foregroundColor: context.colorScheme.onPrimary,
               onPressed: !isFloatingButtonEnabled
                   ? null
-                  : () => context.pushNamed(AppRoute.map.name),
+                  : () {
+                      _isEditModeEnabled.value = false;
+                      context.pushNamed(AppRoute.map.name);
+                    },
               label: const Text("Open Map"),
               icon: const Icon(Icons.map_outlined, size: 25),
             ),
