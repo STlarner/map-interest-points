@@ -22,6 +22,6 @@ extension DateFormatUtils on DateFormat {
 
 extension DateStringUtils on String {
   DateTime toDateTime(DateFormat dateFormat) {
-    return dateFormat.parse(this);
+    return dateFormat.parseUtc(this);
   }
 }
