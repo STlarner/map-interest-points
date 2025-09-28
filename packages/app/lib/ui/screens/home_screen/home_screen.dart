@@ -9,6 +9,7 @@ import "../../../notifiers/trips_notifier.dart";
 import "../../../router/app_routes.dart";
 import "../../../theme/colors_extension.dart";
 import "../../widgets/appbar_circle_button.dart";
+import "../../widgets/empty_state_card.dart";
 import "../../widgets/trip_card_widget.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -116,22 +117,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       right: 24.0,
                       bottom: 120,
                     ),
-                    sliver: SliverList.separated(
-                      separatorBuilder: (context, index) =>
-                          const Padding(padding: EdgeInsets.only(bottom: 24)),
-                      itemBuilder: (context, index) {
-                        final trip =
-                            tripsNotifier.upcomingTripsState.data![index];
-                        return TripCardWidget.fromTripModel(
-                          tripModel: trip,
-                          onTap: () {
-                            tripsNotifier.selectedTrip = trip;
-                            context.pushNamed(AppRoute.tripDetail.name);
-                          },
-                        );
-                      },
-                      itemCount: tripsNotifier.upcomingTripsState.data!.length,
-                    ),
+                    sliver: tripsNotifier.upcomingTripsState.data!.isEmpty
+                        ? const SliverToBoxAdapter(
+                            child: EmptyStateCard(
+                              title: "You have no upcoming trips",
+                              description:
+                                  "In this section you will find all the trips planned for the next month",
+                            ),
+                          )
+                        : SliverList.separated(
+                            separatorBuilder: (context, index) => const Padding(
+                              padding: EdgeInsets.only(bottom: 24),
+                            ),
+                            itemBuilder: (context, index) {
+                              final trip =
+                                  tripsNotifier.upcomingTripsState.data![index];
+                              return TripCardWidget.fromTripModel(
+                                tripModel: trip,
+                                onTap: () {
+                                  tripsNotifier.selectedTrip = trip;
+                                  context.pushNamed(AppRoute.tripDetail.name);
+                                },
+                              );
+                            },
+                            itemCount:
+                                tripsNotifier.upcomingTripsState.data!.length,
+                          ),
                   ),
               ],
             ),
