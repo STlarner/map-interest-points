@@ -6,10 +6,12 @@ class EmptyStateCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.description,
+    required this.icon,
   });
 
   final String title;
   final String description;
+  final Icon icon;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class EmptyStateCard extends StatelessWidget {
         child: Row(
           spacing: 16,
           children: [
-            const Icon(Icons.search_off, size: 60),
+            icon,
             Expanded(
               child: ListTile(
                 title: Text(title),

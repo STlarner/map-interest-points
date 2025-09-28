@@ -120,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     sliver: tripsNotifier.upcomingTripsState.data!.isEmpty
                         ? const SliverToBoxAdapter(
                             child: EmptyStateCard(
+                              icon: Icon(Icons.inbox, size: 60),
                               title: "You have no upcoming trips",
                               description:
                                   "In this section you will find all the trips planned for the next month",
