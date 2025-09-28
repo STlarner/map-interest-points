@@ -9,42 +9,37 @@ import "async_state.dart";
 class TripsNotifier extends ChangeNotifier {
   TripsNotifier();
 
-  AsyncState<List<TripModel>> get allUserTripsState => _allUserTripsState;
-  AsyncState<List<TripModel>> _allUserTripsState = AsyncState.loading();
   TripModel? selectedTrip;
+  AsyncStatus tripsStatus = AsyncStatus.initial;
+  List<TripModel> trips = [];
 
-  AsyncState<List<TripModel>> get upcomingTripsState {
-    switch (_allUserTripsState.status) {
-      case AsyncStatus.initial:
-      case AsyncStatus.loading:
-      case AsyncStatus.error:
-        return _allUserTripsState;
+  List<TripModel> get upcomingTrips {
+    return trips.where((trip) {
+      final now = DateTime.now();
+      final oneMonthLater = DateTime(now.year, now.month + 1, now.day);
 
-      case AsyncStatus.success:
-        final upcomingTrips = _allUserTripsState.data!.where((trip) {
-          final now = DateTime.now();
-          final oneMonthLater = DateTime(now.year, now.month + 1, now.day);
-
-          return trip.startDate.isAfter(now) &&
-              trip.startDate.isBefore(oneMonthLater);
-        }).toList();
-        return AsyncState.success(upcomingTrips);
-    }
+      return trip.startDate.isAfter(now) &&
+          trip.startDate.isBefore(oneMonthLater);
+    }).toList();
   }
 
   Future<void> fetchAllUserTrips({bool forceRefresh = false}) async {
-    if (_allUserTripsState.status == AsyncStatus.success && !forceRefresh) {
+    if (tripsStatus == AsyncStatus.success && !forceRefresh) {
       return;
     }
 
+    tripsStatus = AsyncStatus.loading;
+    notifyListeners();
     GetIt.I<AppRepository>()
         .getAllTrips()
         .then((trips) {
-          _allUserTripsState = AsyncState.success(trips);
+          this.trips = trips;
+          tripsStatus = AsyncStatus.success;
           notifyListeners();
         })
         .catchError((_) {
-          _allUserTripsState = AsyncState.error("Error fetching trips");
+          tripsStatus = AsyncStatus.error;
+          notifyListeners();
         });
   }
 }

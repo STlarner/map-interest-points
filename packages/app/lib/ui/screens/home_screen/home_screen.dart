@@ -75,8 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
 
                 // FIXME(Lo): gestire lo stato di errore
-                if (tripsNotifier.upcomingTripsState.status ==
-                    AsyncStatus.loading)
+                if (tripsNotifier.tripsStatus == AsyncStatus.loading)
                   SliverPadding(
                     padding: const EdgeInsets.only(
                       left: 24.0,
@@ -108,16 +107,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                // FIXME(Lo): rimuovere il wrapper attorno ad async status
-                if (tripsNotifier.upcomingTripsState.status ==
-                    AsyncStatus.success)
+                if (tripsNotifier.tripsStatus == AsyncStatus.success)
                   SliverPadding(
                     padding: const EdgeInsets.only(
                       left: 24.0,
                       right: 24.0,
                       bottom: 120,
                     ),
-                    sliver: tripsNotifier.upcomingTripsState.data!.isEmpty
+                    sliver: tripsNotifier.upcomingTrips.isEmpty
                         ? const SliverToBoxAdapter(
                             child: EmptyStateCard(
                               icon: Icon(Icons.inbox, size: 60),
@@ -131,8 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: EdgeInsets.only(bottom: 24),
                             ),
                             itemBuilder: (context, index) {
-                              final trip =
-                                  tripsNotifier.upcomingTripsState.data![index];
+                              final trip = tripsNotifier.upcomingTrips[index];
                               return TripCardWidget.fromTripModel(
                                 tripModel: trip,
                                 onTap: () {
@@ -141,8 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                               );
                             },
-                            itemCount:
-                                tripsNotifier.upcomingTripsState.data!.length,
+                            itemCount: tripsNotifier.upcomingTrips.length,
                           ),
                   ),
               ],
