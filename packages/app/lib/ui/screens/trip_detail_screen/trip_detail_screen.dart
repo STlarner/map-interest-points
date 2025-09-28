@@ -11,6 +11,7 @@ import "../../../router/app_routes.dart";
 import "../../../theme/colors_extension.dart";
 import "../../extensions/ui_context_extension.dart";
 import "../../widgets/appbar_circle_button.dart";
+import "../../widgets/empty_state_card.dart";
 import "../../widgets/firebase_async_image.dart";
 import "../../widgets/trip_day_card.dart";
 
@@ -117,7 +118,8 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 32)),
-              if (tripNotifier.interestPointsStatus == AsyncStatus.success)
+              if (tripNotifier.interestPointsStatus == AsyncStatus.success &&
+                  tripNotifier.trip.interestPoints.isNotEmpty)
                 SliverPadding(
                   padding: const EdgeInsets.only(
                     left: 24.0,
@@ -187,55 +189,78 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                     right: 24.0,
                     bottom: 120,
                   ),
-                  sliver: SliverList.separated(
-                    separatorBuilder: (context, index) =>
-                        const Padding(padding: EdgeInsets.only(bottom: 24)),
-                    itemBuilder: (context, index) {
-                      final tripDay = tripNotifier.tripDays[index];
-                      return ValueListenableBuilder<bool>(
-                        valueListenable: _isEditModeEnabled,
-                        builder: (context, bool value, child) {
-                          return TripDayCard(
-                            showDeleteButton: value,
-                            interestPoints: tripDay.interestPoints,
-                            day: tripDay.day,
-                            date: tripDay.date,
-                            onTap: (id) {
-                              tripNotifier.selectInterestPoint(
-                                tripNotifier.trip.interestPoints.firstWhere(
-                                  (element) => element.id == id,
-                                ),
-                              );
-                              context.pushNamed(AppRoute.map.name);
-                            },
-                            onDeleteTap: (id) {
-                              final point = tripNotifier.trip.interestPoints
-                                  .firstWhere((element) => element.id == id);
-                              context.read<ProgressIndicatorNotifier>().show();
-                              GetIt.I<AppRepository>()
-                                  .deleteInterestPoint(trip, point)
-                                  .then((_) {
-                                    tripNotifier.deleteInterestPoint(point);
-                                  })
-                                  .catchError((dynamic error) {
-                                    if (context.mounted) {
-                                      context.showErrorBanner(error.toString());
-                                    }
-                                  })
-                                  .whenComplete(() {
-                                    if (context.mounted) {
-                                      context
-                                          .read<ProgressIndicatorNotifier>()
-                                          .hide();
-                                    }
-                                  });
-                            },
-                          );
-                        },
-                      );
-                    },
-                    itemCount: tripNotifier.tripDays.length,
-                  ),
+                  sliver: tripNotifier.trip.interestPoints.isEmpty
+                      ? const SliverToBoxAdapter(
+                          child: EmptyStateCard(
+                            icon: Icon(Icons.location_pin, size: 60),
+                            title: "You haven't added any interest points",
+                            description:
+                                "Open the map to add the first interest point of your trip",
+                          ),
+                        )
+                      : SliverList.separated(
+                          separatorBuilder: (context, index) => const Padding(
+                            padding: EdgeInsets.only(bottom: 24),
+                          ),
+                          itemBuilder: (context, index) {
+                            final tripDay = tripNotifier.tripDays[index];
+                            return ValueListenableBuilder<bool>(
+                              valueListenable: _isEditModeEnabled,
+                              builder: (context, bool value, child) {
+                                return TripDayCard(
+                                  showDeleteButton: value,
+                                  interestPoints: tripDay.interestPoints,
+                                  day: tripDay.day,
+                                  date: tripDay.date,
+                                  onTap: (id) {
+                                    tripNotifier.selectInterestPoint(
+                                      tripNotifier.trip.interestPoints
+                                          .firstWhere(
+                                            (element) => element.id == id,
+                                          ),
+                                    );
+                                    context.pushNamed(AppRoute.map.name);
+                                  },
+                                  onDeleteTap: (id) {
+                                    final point = tripNotifier
+                                        .trip
+                                        .interestPoints
+                                        .firstWhere(
+                                          (element) => element.id == id,
+                                        );
+                                    context
+                                        .read<ProgressIndicatorNotifier>()
+                                        .show();
+                                    GetIt.I<AppRepository>()
+                                        .deleteInterestPoint(trip, point)
+                                        .then((_) {
+                                          tripNotifier.deleteInterestPoint(
+                                            point,
+                                          );
+                                        })
+                                        .catchError((dynamic error) {
+                                          if (context.mounted) {
+                                            context.showErrorBanner(
+                                              error.toString(),
+                                            );
+                                          }
+                                        })
+                                        .whenComplete(() {
+                                          if (context.mounted) {
+                                            context
+                                                .read<
+                                                  ProgressIndicatorNotifier
+                                                >()
+                                                .hide();
+                                          }
+                                        });
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          itemCount: tripNotifier.tripDays.length,
+                        ),
                 ),
 
               if (tripNotifier.interestPointsStatus == AsyncStatus.error)
