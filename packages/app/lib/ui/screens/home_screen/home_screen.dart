@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TripsNotifier>().fetchAllUserTrips();
+      context.read<TripsNotifier>().fetchTrips();
     });
   }
 
@@ -54,27 +54,48 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           body: RefreshIndicator(
-            onRefresh: () => context.read<TripsNotifier>().fetchAllUserTrips(
-              forceRefresh: true,
-            ),
+            onRefresh: () =>
+                context.read<TripsNotifier>().fetchTrips(forceRefresh: true),
             child: CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 24,
-                      left: 24,
-                      right: 24,
-                      bottom: 16,
-                    ),
-                    child: Text(
-                      "Upcoming Trips",
-                      style: context.textTheme.titleLarge,
+                if (tripsNotifier.tripsStatus != AsyncStatus.error)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 24,
+                        left: 24,
+                        right: 24,
+                        bottom: 16,
+                      ),
+                      child: Text(
+                        "Upcoming Trips",
+                        style: context.textTheme.titleLarge,
+                      ),
                     ),
                   ),
-                ),
 
-                // FIXME(Lo): gestire lo stato di errore
+                if (tripsNotifier.tripsStatus == AsyncStatus.error)
+                  SliverToBoxAdapter(
+                    child: MaterialBanner(
+                      backgroundColor: context.colorScheme.errorContainer,
+                      elevation: 2,
+                      content: Text(
+                        "Oops! We couldn’t load your trips right now. Please try again later.",
+                        style: TextStyle(
+                          color: context.colorScheme.onErrorContainer,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            tripsNotifier.fetchTrips();
+                          },
+                          child: const Text("Load again"),
+                        ),
+                      ],
+                    ),
+                  ),
+
                 if (tripsNotifier.tripsStatus == AsyncStatus.loading)
                   SliverPadding(
                     padding: const EdgeInsets.only(

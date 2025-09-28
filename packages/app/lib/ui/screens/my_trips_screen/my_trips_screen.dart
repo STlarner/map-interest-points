@@ -23,11 +23,9 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
       appBar: AppBar(title: const Text("My Trips")),
       body: Consumer<TripsNotifier>(
         builder: (context, tripsNotifier, child) {
-          // FIXME(Lo): gestire l'errore
           switch (tripsNotifier.tripsStatus) {
             case AsyncStatus.initial:
             case AsyncStatus.loading:
-            case AsyncStatus.error:
               return Padding(
                 padding: const EdgeInsets.only(top: 12, left: 24, right: 24),
                 child: ListView.separated(
@@ -51,6 +49,24 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                   },
                   itemCount: 2,
                 ),
+              );
+
+            case AsyncStatus.error:
+              return MaterialBanner(
+                backgroundColor: context.colorScheme.errorContainer,
+                elevation: 2,
+                content: Text(
+                  "Oops! We couldn’t load your trips right now. Please try again later.",
+                  style: TextStyle(color: context.colorScheme.onErrorContainer),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      tripsNotifier.fetchTrips();
+                    },
+                    child: const Text("Load again"),
+                  ),
+                ],
               );
 
             case AsyncStatus.success:
