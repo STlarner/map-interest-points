@@ -29,6 +29,9 @@ class TripDetailNotifier extends ChangeNotifier {
   /// interest points grouped by day
   List<TripDayModel> tripDays = [];
 
+  /// cancellable to sync dirty interest points with backend
+  CancelableOperation<void>? syncDirtyPointsCancelable;
+
   /// loading status of search API (OSM provider or similar)
   AsyncStatus mapSearchStatus = AsyncStatus.initial;
 
@@ -97,8 +100,6 @@ class TripDetailNotifier extends ChangeNotifier {
     interestPoint.visited = visited;
     syncDirtyInterestPoints();
   }
-
-  CancelableOperation<void>? syncDirtyPointsCancelable;
 
   Future<void> syncDirtyInterestPoints() async {
     GetIt.I<LogProvider>().log(

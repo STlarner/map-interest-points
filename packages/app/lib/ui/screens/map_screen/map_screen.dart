@@ -181,7 +181,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                                   color: context
                                       .theme
                                       .additionalColors
-                                      .mapMarkerColor,
+                                      .mapMarkerColor
+                                      .withValues(
+                                        alpha: point.visited ? 0.5 : 1,
+                                      ),
                                   size: 40,
                                 )
                                 .animate(target: isSelected ? 1 : 0)
