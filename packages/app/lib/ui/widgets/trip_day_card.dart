@@ -51,7 +51,7 @@ class TripDayCard extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: CheckboxListCardTile(
-                    value: false,
+                    value: interestPoint.visited,
                     id: interestPoint.id,
                     title: interestPoint.title,
                     subtitle: interestPoint.description,

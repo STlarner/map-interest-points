@@ -7,6 +7,8 @@ class InterestPointModel {
     required this.description,
     required this.date,
     required this.coordinates,
+    this.dirty = false,
+    this.visited = false,
   });
 
   factory InterestPointModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,8 @@ class InterestPointModel {
   String description;
   DateTime date;
   Coordinates coordinates;
+  bool dirty;
+  bool visited;
 
   Map<String, dynamic> toJson() {
     return {
@@ -38,7 +42,7 @@ class InterestPointModel {
 
   @override
   String toString() {
-    return "InterestPointModel(id: $id title: $title, description: $description, "
+    return "InterestPointModel(id: $id dirty: $dirty visited: $visited title: $title, description: $description, "
         "date: $date, latitude: ${coordinates.latitude}, longitude: ${coordinates.longitude})";
   }
 }

@@ -212,6 +212,15 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                                   interestPoints: tripDay.interestPoints,
                                   day: tripDay.day,
                                   date: tripDay.date,
+                                  onChanged: (id, value) {
+                                    tripNotifier.setInterestPointVisited(
+                                      tripNotifier.trip.interestPoints
+                                          .firstWhere(
+                                            (element) => element.id == id,
+                                          ),
+                                      value ?? false,
+                                    );
+                                  },
                                   onTap: (id) {
                                     tripNotifier.selectInterestPoint(
                                       tripNotifier.trip.interestPoints

@@ -92,6 +92,38 @@ class TripDetailNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setInterestPointVisited(InterestPointModel interestPoint, bool visited) {
+    interestPoint.dirty = true;
+    interestPoint.visited = visited;
+    syncDirtyInterestPoints();
+  }
+
+  CancelableOperation<void>? syncDirtyPointsCancelable;
+
+  Future<void> syncDirtyInterestPoints() async {
+    GetIt.I<LogProvider>().log(
+      "Started syncing dirty points...",
+      Severity.debug,
+    );
+
+    final dirtyInterestPoints = trip.interestPoints.where(
+      (interestPoint) => interestPoint.dirty,
+    );
+    await syncDirtyPointsCancelable?.cancel();
+
+    syncDirtyPointsCancelable = CancelableOperation.fromFuture(
+      Future.delayed(const Duration(seconds: 3)),
+    );
+
+    syncDirtyPointsCancelable?.then((_) {
+      // TODO(Lo): chiamata API per sincronizzare selezione dei punti di interesse
+      GetIt.I<LogProvider>().log(
+        "Finished syncing dirty points",
+        Severity.debug,
+      );
+    });
+  }
+
   /// adds a draft interest point from map search or long press
   void addDraftInterestPoint(InterestPointModel interestPoint) {
     draftInterestPoint = interestPoint;
