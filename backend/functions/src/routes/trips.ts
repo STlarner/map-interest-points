@@ -259,4 +259,61 @@ router.delete("/:tripId/interest_points/:pointId", authMiddleware, async (req, r
     }
 });
 
+/// PATCH /trips/:tripId/interest_points/visited
+router.patch("/:tripId/interest_points/visited", authMiddleware, async (req, res) => {
+    try {
+        const user = (req as any).user;
+        const uid = user.uid;
+        const { tripId } = req.params;
+
+        if (!tripId) {
+            return res.status(400).json({ error: "Missing tripId parameter" });
+        }
+
+        const updates = req.body;
+
+        if (!Array.isArray(updates) || updates.length === 0) {
+            return res.status(400).json({
+                error: "Request body must be a non-empty array of { pointId, visited }",
+            });
+        }
+
+        const batch = admin.firestore().batch();
+
+        for (const update of updates) {
+            const { pointId, visited } = update;
+
+            if (!pointId || typeof visited !== "boolean") {
+                return res.status(400).json({
+                    error: "Each update must include { pointId: string, visited: boolean }",
+                });
+            }
+
+            const pointRef = admin
+                .firestore()
+                .collection("users")
+                .doc(uid)
+                .collection("trips")
+                .doc(tripId)
+                .collection("interest_points")
+                .doc(pointId);
+
+            batch.update(pointRef, {
+                visited,
+                updated_at: admin.firestore.FieldValue.serverTimestamp(),
+            });
+        }
+
+        await batch.commit();
+
+        return res.status(200).json({
+            message: "Visited status updated successfully",
+            updated: updates.map(u => u.pointId),
+        });
+    } catch (err) {
+        console.error("Error updating visited status:", err);
+        return res.status(500).json({ error: "Failed to update visited status" });
+    }
+});
+
 export default router;
