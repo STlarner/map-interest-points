@@ -52,8 +52,18 @@ class _CheckboxListCardTileState extends State<CheckboxListCardTile> {
             ),
           Expanded(
             child: ListTile(
-              title: Text(widget.title),
-              subtitle: Text(widget.subtitle),
+              title: Text(
+                widget.title,
+                style: TextStyle(
+                  decoration: value ? TextDecoration.lineThrough : null,
+                ),
+              ),
+              subtitle: Text(
+                widget.subtitle,
+                style: TextStyle(
+                  decoration: value ? TextDecoration.lineThrough : null,
+                ),
+              ),
               onTap: widget.onTap,
               trailing: Checkbox(
                 value: value,
