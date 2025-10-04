@@ -34,6 +34,7 @@ class InterestPointModel {
 
   Map<String, dynamic> toJson() {
     return {
+      "pointId": id,
       "title": title,
       "description": description,
       "date": date.toIso8601String(),

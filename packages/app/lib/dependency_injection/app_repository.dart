@@ -1,3 +1,5 @@
+import "dart:convert";
+
 import "package:core/core.dart";
 
 import "../models/interest_point_model.dart";
@@ -80,6 +82,18 @@ class AppRepository {
   ) async {
     final data = await _networkManager.delete(
       "/trips/${trip.id}/interest_points/${interestPoint.id}",
+    );
+    return data;
+  }
+
+  Future<void> setInterestPointsVisited(
+    TripModel trip,
+    List<InterestPointModel> interestPoints,
+  ) async {
+    final body = interestPoints.map((e) => e.toJson()).toList();
+    final data = await _networkManager.patch(
+      "/trips/${trip.id}/interest_points/visited",
+      body: body,
     );
     return data;
   }

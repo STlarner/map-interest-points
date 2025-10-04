@@ -102,14 +102,9 @@ class TripDetailNotifier extends ChangeNotifier {
   }
 
   Future<void> syncDirtyInterestPoints() async {
-    GetIt.I<LogProvider>().log(
-      "Started syncing dirty points...",
-      Severity.debug,
-    );
-
-    final dirtyInterestPoints = trip.interestPoints.where(
-      (interestPoint) => interestPoint.dirty,
-    );
+    final dirtyInterestPoints = trip.interestPoints
+        .where((interestPoint) => interestPoint.dirty)
+        .toList();
     await syncDirtyPointsCancelable?.cancel();
 
     syncDirtyPointsCancelable = CancelableOperation.fromFuture(
@@ -117,10 +112,12 @@ class TripDetailNotifier extends ChangeNotifier {
     );
 
     syncDirtyPointsCancelable?.then((_) {
-      // TODO(Lo): chiamata API per sincronizzare selezione dei punti di interesse
-      GetIt.I<LogProvider>().log(
-        "Finished syncing dirty points",
-        Severity.debug,
+      for (final e in trip.interestPoints) {
+        e.dirty = false;
+      }
+      GetIt.I<AppRepository>().setInterestPointsVisited(
+        trip,
+        dirtyInterestPoints,
       );
     });
   }
