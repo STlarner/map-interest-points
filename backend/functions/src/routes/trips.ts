@@ -92,7 +92,7 @@ router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
             return res.status(400).json({ error: "Missing tripId parameter" });
         }
 
-        const { title, description, coordinates, date } = req.body;
+        const { title, description, coordinates, date, visited } = req.body;
 
         if (!title || !description || !coordinates || !date) {
             return res.status(400).json({
@@ -134,6 +134,7 @@ router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
                 coordinates.longitude
             ),
             date: parsedDate,
+            visited,
             created_at: admin.firestore.FieldValue.serverTimestamp(),
         };
 
@@ -145,6 +146,7 @@ router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
             description,
             coordinates: normalizeCoordinates(newPoint.coordinates),
             date: jsDate.toISOString(),
+            visited
         });
     } catch (err) {
         console.error("Error adding interest point:", err);
@@ -152,73 +154,6 @@ router.post("/:tripId/interest_points", authMiddleware, async (req, res) => {
     }
 });
 
-
-/// PATCH /trips/:tripId/interest_points/visited
-router.patch("/:tripId/interest_points/visited", authMiddleware, async (req, res) => {
-    try {
-        const user = (req as any).user;
-        const uid = user.uid;
-        const { tripId } = req.params;
-
-        if (!tripId) {
-            return res.status(400).json({ error: "Missing tripId parameter" });
-        }
-
-        const updates = req.body;
-
-        if (!Array.isArray(updates) || updates.length === 0) {
-            return res.status(400).json({
-                error: "Request body must be a non-empty array of interest points",
-            });
-        }
-
-        const batch = admin.firestore().batch();
-        const updatedPointIds: string[] = [];
-
-        for (const update of updates) {
-            const { pointId, visited } = update;
-
-            if (!pointId || typeof visited !== "boolean") {
-                return res.status(400).json({ error: "Wrong input data" });
-            }
-
-            const pointRef = admin
-                .firestore()
-                .collection("users")
-                .doc(uid)
-                .collection("trips")
-                .doc(tripId)
-                .collection("interest_points")
-                .doc(pointId);
-
-            const doc = await pointRef.get();
-            if (!doc.exists) {
-                return res.status(400).json({ error: "Document not found" });
-            }
-
-            batch.update(pointRef, {
-                visited,
-                updated_at: admin.firestore.FieldValue.serverTimestamp(),
-            });
-
-            updatedPointIds.push(pointId);
-        }
-
-        if (updatedPointIds.length > 0) {
-            await batch.commit();
-        } else {
-            return res.status(400).json({ error: "No valid interest points to update" });
-        }
-
-        return res.status(200).json({
-            message: "Visited status updated successfully",
-            updated: updatedPointIds,
-        });
-    } catch (err) {
-        console.error("Error updating visited status:", err, req.body);
-        return res.status(500).json({ error: "Failed to update visited status" });
-    }
-});
 /// PATCH /trips/:tripId/interest_points/visited
 router.patch("/:tripId/interest_points/visited", authMiddleware, async (req, res) => {
     try {
