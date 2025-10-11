@@ -1,6 +1,7 @@
 export "package:async/async.dart";
 export "package:get_it/get_it.dart";
 export "package:go_router/go_router.dart";
+export "package:url_launcher/url_launcher.dart";
 
 export "dependency_injection/core_dependency_provider.dart";
 export "dependency_injection/dependency_provider.dart";

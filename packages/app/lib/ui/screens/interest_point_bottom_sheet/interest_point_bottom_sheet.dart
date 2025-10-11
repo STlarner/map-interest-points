@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:core/core.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
@@ -96,6 +98,18 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                           const Icon(Icons.calendar_month, size: 20),
                           Text(widget.interestPoint.date.eEEEdMMMMy),
                         ],
+                      ),
+                      TextButton.icon(
+                        onPressed: () => openDefaultMap(
+                          latitude:
+                              widget.interestPoint.coordinates.latLng.latitude,
+                          longitude:
+                              widget.interestPoint.coordinates.latLng.longitude,
+                          label: widget.interestPoint.title,
+                        ),
+                        label: const Text("Open location on map"),
+                        icon: const Icon(Icons.location_pin),
+                        style: TextButton.styleFrom(padding: EdgeInsets.zero),
                       ),
                     ],
                   ),
@@ -298,6 +312,57 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
       setState(() {
         _dateController.text = formattedDate;
       });
+    }
+  }
+
+  Future<void> openDefaultMap({
+    required double latitude,
+    required double longitude,
+    String? label,
+  }) async {
+    final encodedLabel = Uri.encodeComponent(label ?? "");
+    try {
+      var launched = false;
+
+      if (Platform.isIOS) {
+        // Try Apple Maps app first
+        final appleMaps = Uri.parse(
+          "maps://?ll=$latitude,$longitude&q=$encodedLabel",
+        );
+        if (await canLaunchUrl(appleMaps)) {
+          launched = await launchUrl(
+            appleMaps,
+            mode: LaunchMode.externalApplication,
+          );
+        } else {
+          // Optionally try Google Maps app if installed
+          final googleMaps = Uri.parse(
+            "comgooglemaps://?center=$latitude,$longitude&q=$encodedLabel",
+          );
+          if (await canLaunchUrl(googleMaps)) {
+            launched = await launchUrl(
+              googleMaps,
+              mode: LaunchMode.externalApplication,
+            );
+          }
+        }
+      } else if (Platform.isAndroid) {
+        // Prefer geo: on Android
+        final geo = Uri.parse("geo:$latitude,$longitude?q=$encodedLabel");
+        if (await canLaunchUrl(geo)) {
+          launched = await launchUrl(geo, mode: LaunchMode.externalApplication);
+        }
+      }
+
+      if (!launched && mounted) {
+        context.showErrorBanner(
+          "Cannot launch map application, check if you have one installed",
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        context.showErrorBanner(e.toString());
+      }
     }
   }
 }

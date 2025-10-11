@@ -1,5 +1,3 @@
-import "dart:convert";
-
 import "package:core/core.dart";
 
 import "../models/interest_point_model.dart";

@@ -4,7 +4,6 @@ import "package:flutter/services.dart";
 import "package:flutter_map/flutter_map.dart";
 import "package:provider/provider.dart";
 import "package:ui/ui.dart";
-import "package:url_launcher/url_launcher.dart";
 
 import "../../../models/interest_point_model.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
