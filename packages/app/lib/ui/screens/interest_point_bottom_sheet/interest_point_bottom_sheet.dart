@@ -85,18 +85,31 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                         contentPadding: EdgeInsets.zero,
                         title: Text(widget.interestPoint.title),
                         subtitle: Text(widget.interestPoint.description),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            editModeNotifier.value = !isEditModeEnabled;
-                          },
-                        ),
                       ),
                       Row(
                         spacing: 4,
                         children: [
                           const Icon(Icons.calendar_month, size: 20),
                           Text(widget.interestPoint.date.eEEEdMMMMy),
+                          const Spacer(),
+                          Chip(
+                            label: Text(
+                              widget.interestPoint.visited
+                                  ? "Visited"
+                                  : "To visit",
+                            ),
+                            labelStyle: TextStyle(
+                              color: context.colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
                         ],
                       ),
                       TextButton.icon(
@@ -110,6 +123,27 @@ class _InterestPointBottomSheetState extends State<InterestPointBottomSheet> {
                         label: const Text("Open location on map"),
                         icon: const Icon(Icons.location_pin),
                         style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                context.pop();
+                              },
+                              child: const Text("Close"),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: FilledButton(
+                              onPressed: () {
+                                editModeNotifier.value = true;
+                              },
+                              child: const Text("Edit"),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
