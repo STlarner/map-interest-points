@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "../notifiers/trip_detail_notifier.dart";
 import "../notifiers/trips_notifier.dart";
+import "../ui/screens/create_trip_screen/create_trip_screen.dart";
 import "../ui/screens/home_screen/home_screen.dart";
 import "../ui/screens/login_screen/login_screen.dart";
 import "../ui/screens/map_screen/map_screen.dart";
@@ -22,7 +23,8 @@ enum AppRoute {
   myTrips("my-trips", "/tabs/my-trips"),
   tripDetail("trip-detail", "trip-detail"),
   map("map", "map"),
-  mapSearch("map-search", "map-search");
+  mapSearch("map-search", "map-search"),
+  createTrip("create-trip", "/create-trip");
 
   const AppRoute(this.name, this.path);
 
@@ -122,6 +124,20 @@ class AppRoutes implements RouteProvider {
         const NoTransitionPage(child: MyTripsScreen()),
   );
 
+  late final createTripRoute = GoRoute(
+    name: AppRoute.createTrip.name,
+    path: AppRoute.createTrip.path,
+    pageBuilder: (context, state) => CustomTransitionPage(
+      key: state.pageKey,
+      child: const CreateTripScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+      reverseTransitionDuration: const Duration(milliseconds: 300),
+    ),
+  );
+
   late final tabRoute = StatefulShellRoute.indexedStack(
     pageBuilder: (context, state, navigationShell) {
       final hideBottomNavigationBar =
@@ -149,10 +165,8 @@ class AppRoutes implements RouteProvider {
                     onTap: (index) {
                       navigationShell.goBranch(index, initialLocation: true);
                     },
-                    onCenterButtonTap: () => GetIt.I<LogProvider>().log(
-                      "Center Button Tapped",
-                      Severity.debug,
-                    ),
+                    onCenterButtonTap: () =>
+                        context.pushNamed(AppRoute.createTrip.name),
                   ),
           ),
         ),
@@ -165,5 +179,10 @@ class AppRoutes implements RouteProvider {
   );
 
   @override
-  List<RouteBase> get routes => [splashRoute, loginRoute, tabRoute];
+  List<RouteBase> get routes => [
+    splashRoute,
+    loginRoute,
+    tabRoute,
+    createTripRoute,
+  ];
 }

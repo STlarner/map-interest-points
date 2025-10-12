@@ -58,17 +58,21 @@ class _FloatingBottomNavigationBarState
                         widget.onTap?.call(0);
                       },
                     ),
-                    ElevatedButton(
-                      onPressed: widget.onCenterButtonTap,
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(12),
-                        backgroundColor: context.colorScheme.onPrimaryContainer,
-                      ),
-                      child: Icon(
-                        Icons.add,
-                        color: context.colorScheme.surface,
-                        size: 28,
+                    Hero(
+                      tag: "bottom-bar-center-button",
+                      child: ElevatedButton(
+                        onPressed: widget.onCenterButtonTap,
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(12),
+                          backgroundColor:
+                              context.colorScheme.onPrimaryContainer,
+                        ),
+                        child: Icon(
+                          Icons.add,
+                          color: context.colorScheme.surface,
+                          size: 28,
+                        ),
                       ),
                     ),
                     IconButton(
