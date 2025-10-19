@@ -8,6 +8,7 @@ import "../../../dependency_injection/session_manager.dart";
 import "../../../router/app_routes.dart";
 import "../../extensions/ui_context_extension.dart";
 import "../../images/app_images.dart";
+import "../../widgets/todo_feature_alert_dialog.dart";
 import "widgets/or_divider.dart";
 
 class LoginScreen extends StatefulWidget {
@@ -33,14 +34,24 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+      ),
       child: Scaffold(
         body: SingleChildScrollView(
           child: Center(
             child: Column(
               spacing: 32,
               children: [
-                Image.asset(AppImages.tokyoSigns, fit: BoxFit.fitWidth),
+                SizedBox(
+                  height: 300,
+                  width: double.infinity,
+                  child: Image.asset(
+                    AppImages.markerLogin,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Form(
@@ -142,9 +153,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           elevation: 0,
                           onPressed: () {
-                            GetIt.I<LogProvider>().log(
-                              "Google Sign In Button Pressed",
-                              Severity.debug,
+                            showDialog<void>(
+                              context: context,
+                              builder: (context) =>
+                                  const TodoFeatureAlertDialog(),
                             );
                           },
                         ),
@@ -153,20 +165,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           shape: const StadiumBorder(),
                           elevation: 0,
                           onPressed: () {
-                            GetIt.I<LogProvider>().log(
-                              "Apple Sign In Button Pressed",
-                              Severity.debug,
+                            showDialog<void>(
+                              context: context,
+                              builder: (context) =>
+                                  const TodoFeatureAlertDialog(),
                             );
                           },
                         ),
                         const SizedBox(height: 8),
                         TextButton(
                           onPressed: () {
-                            GetIt.I<LogProvider>().log(
-                              "Sign Up Button Pressed",
-                              Severity.debug,
+                            showDialog<void>(
+                              context: context,
+                              builder: (context) =>
+                                  const TodoFeatureAlertDialog(),
                             );
-                            context.goNamed(AppRoute.signUp.name);
+                            //context.goNamed(AppRoute.signUp.name);
                           },
                           child: const Text("Don't have an account? Sign up"),
                         ),

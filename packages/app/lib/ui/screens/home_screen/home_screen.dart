@@ -44,9 +44,44 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: AppBarCircleButton(
                     padding: EdgeInsets.zero,
                     icon: Icons.logout,
-                    onTap: () {
-                      GetIt.I<SessionManager>().logout();
-                      context.goNamed(AppRoute.login.name);
+                    onTap: () async {
+                      final shouldLogout = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Confirm Logout"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text("Are you sure you want to log out?"),
+                                const SizedBox(height: 16),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: FilledButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text("Logout"),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text("Cancel"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                      if (shouldLogout ?? false) {
+                        GetIt.I<SessionManager>().logout();
+                        if (context.mounted) {
+                          context.goNamed(AppRoute.login.name);
+                        }
+                      }
                     },
                   ),
                 ),
