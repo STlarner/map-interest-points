@@ -1,5 +1,4 @@
 import "package:cloud_firestore/cloud_firestore.dart";
-import "package:core/core.dart";
 
 import "interest_point_model.dart";
 
@@ -14,8 +13,8 @@ class TripModel {
   });
 
   factory TripModel.fromJson({required Map<String, dynamic> json}) {
-    final start = DateTimeUtils.fromIsoString(json["start_date"] as String)!;
-    final end = DateTimeUtils.fromIsoString(json["end_date"] as String)!;
+    final start = DateTime.parse(json["start_date"] as String);
+    final end = DateTime.parse(json["end_date"] as String);
     return TripModel(
       id: json["id"] as String,
       title: json["title"] as String,

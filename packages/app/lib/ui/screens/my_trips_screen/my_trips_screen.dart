@@ -70,6 +70,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
               );
 
             case AsyncStatus.success:
+              //TODO: handle empty state
               return ListView.builder(
                 itemCount: tripsNotifier.trips.length,
                 itemBuilder: (context, index) {
