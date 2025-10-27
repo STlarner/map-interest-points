@@ -32,7 +32,7 @@ class TripModel {
   final DateTime startDate;
   final DateTime endDate;
 
-  String get days => (endDate.difference(startDate).inDays + 1).toString();
+  int get days => endDate.difference(startDate).inDays + 1;
 
   List<InterestPointModel> interestPoints = [];
 

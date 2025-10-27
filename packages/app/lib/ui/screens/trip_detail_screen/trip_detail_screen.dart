@@ -103,7 +103,7 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                   delegate: SliverChildListDelegate([
                     ListTile(
                       title: Text(
-                        "${trip.startDate.ddMMM} - ${trip.endDate.ddMMM} · ${trip.days} days",
+                        "${trip.startDate.ddMMM} - ${trip.endDate.ddMMM} · ${trip.days} ${trip.days == 1 ? "day" : "days"}",
                         style: context.textTheme.titleMedium,
                       ),
                       leading: const Icon(Icons.calendar_month),

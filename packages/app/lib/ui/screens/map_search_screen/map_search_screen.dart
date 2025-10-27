@@ -40,6 +40,8 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final lightMode = Theme.of(context).brightness == Brightness.light;
+
     return Consumer<TripDetailNotifier>(
       builder: (context, tripNotifier, child) {
         return Scaffold(
@@ -47,9 +49,13 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
-            systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarIconBrightness: lightMode
+                  ? Brightness.dark
+                  : Brightness.light,
+              statusBarBrightness: lightMode
+                  ? Brightness.light
+                  : Brightness.dark,
             ),
             title: TextField(
               autocorrect: false,

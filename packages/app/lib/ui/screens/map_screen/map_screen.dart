@@ -8,9 +8,9 @@ import "package:ui/ui.dart";
 import "../../../models/interest_point_model.dart";
 import "../../../notifiers/trip_detail_notifier.dart";
 import "../../../router/app_routes.dart";
-import "../../../theme/colors_extension.dart";
 import "../../extensions/input_decoration_extension.dart";
 import "../../widgets/appbar_circle_button.dart";
+import "../../widgets/location_pin.dart";
 import "../interest_point_bottom_sheet/interest_point_bottom_sheet.dart";
 import "animated_map_controller.dart";
 
@@ -140,8 +140,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 );
                 showInterestPointBottomSheet(context, interestPoint);
               },
-              onTap: (tapPosition, point) {
-                GetIt.I<LogProvider>().log("Tapped at $point", Severity.debug);
+              onPositionChanged: (MapCamera position, bool hasGesture) {
+                currentZoom = position.zoom;
               },
             ),
             children: [
@@ -175,16 +175,15 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                       child: Align(
                         alignment: Alignment.topCenter,
                         child:
-                            Icon(
-                                  Icons.location_pin,
-                                  color: context
-                                      .theme
-                                      .additionalColors
-                                      .mapMarkerColor
-                                      .withValues(
-                                        alpha: point.visited ? 0.5 : 1,
-                                      ),
-                                  size: 40,
+                            LocationPin(
+                                  day:
+                                      point.date
+                                          .difference(
+                                            tripNotifier.trip.startDate,
+                                          )
+                                          .inDays +
+                                      1,
+                                  visited: point.visited,
                                 )
                                 .animate(target: isSelected ? 1 : 0)
                                 .scaleXY(
